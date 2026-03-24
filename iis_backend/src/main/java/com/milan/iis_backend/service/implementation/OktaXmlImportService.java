@@ -1,7 +1,7 @@
 package com.milan.iis_backend.service.implementation;
 
 import com.milan.iis_backend.model.OktaUserXml;
-import com.milan.iis_backend.service.XmlImportService;
+import com.milan.iis_backend.service.interfaces.exports.XmlImportService;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;
 import org.springframework.core.io.ClassPathResource;

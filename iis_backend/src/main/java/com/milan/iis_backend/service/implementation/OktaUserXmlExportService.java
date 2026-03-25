@@ -18,6 +18,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 public class OktaUserXmlExportService implements XmlExportService {
@@ -38,18 +39,29 @@ public class OktaUserXmlExportService implements XmlExportService {
 
     @Override
     public List<OktaUser> filterUsersFromXmlByXPath(Path xmlFile, String searchTerm) throws Exception {
-        String safe = searchTerm.replace("'", "");
+        String safe = (searchTerm == null ? "" : searchTerm).replace("'", "");
+        String term = safe.trim().toLowerCase(Locale.ROOT);
 
-        String expr =
-                "/oktaUsers/user[" +
-                        "contains(firstName, '" + safe + "') or " +
-                        "contains(lastName, '" + safe + "') or " +
-                        "contains(email, '" + safe + "') or " +
-                        "contains(login, '" + safe + "') or " +
-                        "contains(mobilePhone, '" + safe + "') or " +
-                        "contains(sourceType, '" + safe + "') or " +
-                        "contains(id, '" + safe + "')" +
-                        "]";
+        // vraca sve ako je query prazan
+        String expr;
+        if (term.isBlank()) {
+            expr = "/oktaUsers/user";
+        } else {
+            // prijevod za lower i upper case
+            String UPPER = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+            String LOWER = "abcdefghijklmnopqrstuvwxyz";
+
+            expr =
+                    "/oktaUsers/user[" +
+                            "contains(translate(firstName, '" + UPPER + "', '" + LOWER + "'), '" + term + "') or " +
+                            "contains(translate(lastName,  '" + UPPER + "', '" + LOWER + "'), '" + term + "') or " +
+                            "contains(translate(email,     '" + UPPER + "', '" + LOWER + "'), '" + term + "') or " +
+                            "contains(translate(login,     '" + UPPER + "', '" + LOWER + "'), '" + term + "') or " +
+                            "contains(translate(mobilePhone,'" + UPPER + "', '" + LOWER + "'), '" + term + "') or " +
+                            "contains(translate(sourceType,'" + UPPER + "', '" + LOWER + "'), '" + term + "') or " +
+                            "contains(translate(id,        '" + UPPER + "', '" + LOWER + "'), '" + term + "')" +
+                            "]";
+        }
 
         var dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(false);

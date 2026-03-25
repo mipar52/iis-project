@@ -1,0 +1,9 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:tns="http://milan.com/iis/oktauser/soap">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <tns:searchOktaUsersRequest>
+            <tns:term>branko</tns:term>
+        </tns:searchOktaUsersRequest>
+    </soapenv:Body>
+</soapenv:Envelope>

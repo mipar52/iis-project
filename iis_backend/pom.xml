@@ -119,6 +119,11 @@
             <artifactId>wsdl4j</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>jakarta.xml.bind</groupId>
+            <artifactId>jakarta.xml.bind-api</artifactId>
+        </dependency>
+
     </dependencies>
 
     <build>
@@ -139,6 +144,43 @@
                         </path>
                     </annotationProcessorPaths>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <version>3.2.0</version>
+                <executions>
+                    <execution>
+                        <id>xjc</id>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <sources>
+                                <source>${project.basedir}/src/main/resources/soap/oktauser-soap.xsd</source>
+                            </sources>
+                            <packageName>com.milan.iis_backend.soap.gen</packageName>
+                            <outputDirectory>${project.build.directory}/generated-sources/xjc</outputDirectory>
+                            <clearOutputDir>true</clearOutputDir>
+                            <addCompileSourceRoot>true</addCompileSourceRoot>
+                        </configuration>
+                    </execution>
+                </executions>
+
+                <!-- KLJUČNO: da XJC i JAXB budu Jakarta -->
+                <dependencies>
+                    <dependency>
+                        <groupId>org.glassfish.jaxb</groupId>
+                        <artifactId>jaxb-xjc</artifactId>
+                        <version>4.0.5</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.glassfish.jaxb</groupId>
+                        <artifactId>jaxb-runtime</artifactId>
+                        <version>4.0.5</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

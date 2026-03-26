@@ -53,4 +53,36 @@ Create:
 
 ```
 
+LOGIN:
+```bash
+curl -s -X POST http://localhost:8081/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"username":"test","password":"test"}'
+```
 
+REGISTER:
+```bash
+curl -s -X POST http://localhost:8081/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{"username":"test","password":"test"}'
+```
+
+CREATE USER:
+```bash
+curl -i -X POST http://localhost:8081/api/v1/users \
+  -H "Authorization: Bearer <ACCESS_TOKEN>" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "profile": {
+      "firstName":"Milica",
+      "lastName":"Krmptoci",
+      "login":"mili@algebra.hr",
+      "email":"mili@algebra.hr"
+    },
+    "type": { "id":"oty1192io1nxYU7Lq6767" }
+  }'
+```
+
+TODO:
+- Better error handling
+- React client!

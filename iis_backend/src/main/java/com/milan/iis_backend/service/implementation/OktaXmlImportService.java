@@ -1,6 +1,6 @@
 package com.milan.iis_backend.service.implementation;
 
-import com.milan.iis_backend.model.OktaUserXml;
+import com.milan.iis_backend.model.okta.OktaUserXml;
 import com.milan.iis_backend.service.interfaces.exports.XmlImportService;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;
@@ -11,22 +11,15 @@ import javax.xml.XMLConstants;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-import javax.xml.validation.Validator;
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 @Service
 public class OktaXmlImportService implements XmlImportService {
     @Override
-    public OktaUserXml validateAndParse(InputStream xmlString) throws Exception {
-        SchemaFactory schemaFactory = SchemaFactory.newInstance(XMLConstants.W3C_XML_SCHEMA_NS_URI);
-        Schema schema = schemaFactory
-                .newSchema(new StreamSource(new ClassPathResource("schema/okta-user.xsd").getInputStream()));
-
-        Validator validator = schema.newValidator();
-        validator.validate(new StreamSource(xmlString));
-
-        throw new IllegalStateException("Use validateAndParse(byte[]) overload");
+    public OktaUserXml validateAndParse(InputStream xmlStream) throws Exception {
+        byte[] xmlBytes = xmlStream.readAllBytes();
+        return validateAndParse(xmlBytes);
     }
 
     @Override

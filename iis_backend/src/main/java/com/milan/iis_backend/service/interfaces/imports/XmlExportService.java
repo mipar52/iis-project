@@ -1,6 +1,6 @@
 package com.milan.iis_backend.service.interfaces.imports;
 
-import com.milan.iis_backend.model.OktaUser;
+import com.milan.iis_backend.model.okta.OktaUser;
 
 import java.nio.file.Path;
 import java.util.List;

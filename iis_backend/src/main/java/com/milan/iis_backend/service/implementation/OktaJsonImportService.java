@@ -1,7 +1,7 @@
 package com.milan.iis_backend.service.implementation;
 
 import com.milan.iis_backend.exceptions.JsonSchemaValidationException;
-import com.milan.iis_backend.model.OktaUserJson;
+import com.milan.iis_backend.model.okta.OktaUserJson;
 import com.milan.iis_backend.service.interfaces.exports.JsonImportService;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;

@@ -1,8 +1,9 @@
 package com.milan.iis_backend.controller;
 
-import com.milan.iis_backend.model.OktaUser;
-import com.milan.iis_backend.model.OktaUserJson;
-import com.milan.iis_backend.model.OktaUserXml;
+import com.milan.iis_backend.model.okta.OktaUser;
+import com.milan.iis_backend.model.okta.OktaUserJson;
+import com.milan.iis_backend.model.okta.OktaUserProfile;
+import com.milan.iis_backend.model.okta.OktaUserXml;
 import com.milan.iis_backend.repository.UserRepository;
 import com.milan.iis_backend.service.interfaces.exports.JsonImportService;
 import com.milan.iis_backend.service.interfaces.exports.XmlImportService;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +36,7 @@ public class ImportController {
             return ResponseEntity.badRequest().body("Need to send either an XML file or a JSON file!!!!!!!!");
         }
 
-        List<Long> savedIds = new ArrayList<>();
+        List<String> savedIds = new ArrayList<>();
         List<ValidationError> validationErrors = new ArrayList<>();
 
         if (xmlFile != null && !xmlFile.isEmpty()) {
@@ -45,12 +45,14 @@ public class ImportController {
                 OktaUserXml dto = xmlImportService.validateAndParse(xmlBytes);
 
                 OktaUser user = new OktaUser();
-                user.setFirstName(dto.firstName);
-                user.setLastName(dto.lastName);
-                user.setMobilePhone(dto.mobilePhone);
-                user.setEmail(dto.email);
-                user.setLogin(dto.login);
-                user.setSourceType("xml");
+                OktaUserProfile profile = new OktaUserProfile();
+                profile.setFirstName(dto.firstName);
+                profile.setLastName(dto.lastName);
+                profile.setMobilePhone(dto.mobilePhone);
+                profile.setEmail(dto.email);
+                profile.setLogin(dto.login);
+                user.setProfile(profile);
+              //  profile.setSourceType("xml");
 
                 savedIds.add(userRepository.save(user).getId());
 
@@ -65,13 +67,14 @@ public class ImportController {
                 OktaUserJson dto = jsonImportService.validateAndParse(jsonBytes);
 
                 OktaUser user = new OktaUser();
-                user.setFirstName(dto.firstName);
-                user.setLastName(dto.lastName);
-                user.setMobilePhone(dto.mobilePhone);
-                user.setEmail(dto.email);
-                user.setLogin(dto.login);
-                user.setSourceType("json");
-                savedIds.add(userRepository.save(user).getId());
+                OktaUserProfile profile = new OktaUserProfile();
+
+                profile.setFirstName(dto.firstName);
+                profile.setLastName(dto.lastName);
+                profile.setMobilePhone(dto.mobilePhone);
+                profile.setEmail(dto.email);
+                profile.setLogin(dto.login);
+                user.setProfile(profile);
             } catch (Exception ex) {
                 validationErrors.add(new ValidationError("jsonFile", ex.getMessage()));
             }
@@ -87,5 +90,5 @@ public class ImportController {
         return userRepository.findAll();
     }
     public record ValidationError(String field, String message) {}
-    public record ImportResult(List<Long> savedIds, List<ValidationError> errors) {}
+    public record ImportResult(List<String> savedIds, List<ValidationError> errors) {}
 }

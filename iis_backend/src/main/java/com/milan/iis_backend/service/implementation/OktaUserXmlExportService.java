@@ -1,6 +1,7 @@
 package com.milan.iis_backend.service.implementation;
 
-import com.milan.iis_backend.model.OktaUser;
+import com.milan.iis_backend.model.okta.OktaUser;
+import com.milan.iis_backend.model.okta.OktaUserProfile;
 import com.milan.iis_backend.service.interfaces.imports.XmlExportService;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Document;
@@ -74,14 +75,15 @@ public class OktaUserXmlExportService implements XmlExportService {
         for (int i = 0; i < nodes.getLength(); i++) {
             Element userEl = (Element) nodes.item(i);
             OktaUser u = new OktaUser();
-
-            u.setId(parseLong(getText(userEl, "id")));
-            u.setFirstName(getText(userEl, "firstName"));
-            u.setLastName(getText(userEl, "lastName"));
-            u.setEmail(getText(userEl, "email"));
-            u.setLogin(getText(userEl, "login"));
-            u.setMobilePhone(getText(userEl, "mobilePhone"));
-            u.setSourceType(getText(userEl, "sourceType"));
+            OktaUserProfile profile = new OktaUserProfile();
+            u.setId(getText(userEl, "id"));
+            profile.setFirstName(getText(userEl, "firstName"));
+            profile.setLastName(getText(userEl, "lastName"));
+            profile.setEmail(getText(userEl, "email"));
+            profile.setLogin(getText(userEl, "login"));
+            profile.setMobilePhone(getText(userEl, "mobilePhone"));
+            //profile.setSourceType(getText(userEl, "sourceType"));
+            u.setProfile(profile);
 
             result.add(u);
         }
@@ -102,12 +104,12 @@ public class OktaUserXmlExportService implements XmlExportService {
             root.appendChild(user);
 
             appendText(doc, user, "id", u.getId() == null ? "" : String.valueOf(u.getId()));
-            appendText(doc, user, "firstName", n(u.getFirstName()));
-            appendText(doc, user, "lastName", n(u.getLastName()));
-            appendText(doc, user, "email", n(u.getEmail()));
-            appendText(doc, user, "login", n(u.getLogin()));
-            appendText(doc, user, "mobilePhone", n(u.getMobilePhone()));
-            appendText(doc, user, "sourceType", n(u.getSourceType()));
+            appendText(doc, user, "firstName", checkIfEmpty(u.getProfile().getFirstName()));
+            appendText(doc, user, "lastName", checkIfEmpty(u.getProfile().getLastName()));
+            appendText(doc, user, "email", checkIfEmpty(u.getProfile().getEmail()));
+            appendText(doc, user, "login", checkIfEmpty(u.getProfile().getLogin()));
+            appendText(doc, user, "mobilePhone", checkIfEmpty(u.getProfile().getMobilePhone()));
+          //  appendText(doc, user, "sourceType", checkIfEmpty(u.getSourceType()));
         }
 
         return doc;
@@ -129,7 +131,7 @@ public class OktaUserXmlExportService implements XmlExportService {
         try { return Long.parseLong(s.trim()); } catch (Exception e) { return null; }
     }
 
-    private static String n(String s) {
+    private static String checkIfEmpty(String s) {
         return s == null ? "" : s;
     }
 }

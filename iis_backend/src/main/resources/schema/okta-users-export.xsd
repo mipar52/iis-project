@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://milan.com/iis/oktausers/xml"
+           xmlns:tns="http://milan.com/iis/oktausers/xml"
+           xmlns:u="http://milan.com/iis/oktauser/xml"
+           elementFormDefault="qualified">
+
+    <xs:import namespace="http://milan.com/iis/oktauser/xml"
+               schemaLocation="okta-user.xsd"/>
+
+    <xs:element name="oktaUsers">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="user" type="u:OktaUserType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

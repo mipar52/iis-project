@@ -80,6 +80,14 @@ public class AuthService {
         return new TokenResponse(newAccessToken, newRefreshToken);
     }
 
+    public void revokeRefreshToken(String refreshTokenValue) {
+        RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenValue).orElseThrow(() -> new RuntimeException("Invalid refresh token!"));
+        if (refreshToken.isRevoked()) throw new RuntimeException("Refresh token revoked!");
+
+        refreshToken.setRevoked(true);
+        refreshTokenRepository.save(refreshToken);
+    }
+
     private String issueRefreshToken(AppUser appUser) {
         String token = randomToken(48);
         RefreshToken refreshToken = new RefreshToken();

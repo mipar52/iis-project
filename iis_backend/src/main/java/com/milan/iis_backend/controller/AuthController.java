@@ -31,4 +31,9 @@ public class AuthController {
     public TokenResponse refresh(@RequestBody RefreshRequest request) {
         return authService.refresh(request.getRefreshToken());
     }
+
+    @PostMapping("/revoke")
+    public void revoke(@RequestBody RefreshRequest request) {
+        authService.revokeRefreshToken(request.getRefreshToken());
+    }
 }

@@ -1,0 +1,25 @@
+syntax = "proto3";
+
+option java_multiple_files = true;
+option java_package = "com.milan.iis_backend.grpc";
+option java_outer_classname = "WeatherProto";
+
+package weather;
+
+service WeatherService {
+  rpc SearchCityTemperature (CityQuery) returns (CityTemperatureResponse);
+}
+
+message CityQuery {
+  string query = 1; // naziv grada ili dio naziva
+}
+
+message CityTemperature {
+  string city = 1;
+  string temperature = 2; // npr. "12.3" ili "12"
+  string unit = 3;        // npr. "°C" (ako želiš)
+}
+
+message CityTemperatureResponse {
+  repeated CityTemperature matches = 1;
+}

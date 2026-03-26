@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://milan.com/iis/oktauser/xml"
+           xmlns:tns="http://milan.com/iis/oktauser/xml"
+           elementFormDefault="qualified">
+
+    <xs:element name="oktaUser" type="tns:OktaUserType"/>
+
+    <xs:complexType name="OktaUserType">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string" minOccurs="0"/>
+            <xs:element name="sourceType" type="xs:string" minOccurs="0"/>
+            <xs:element name="firstName" type="xs:string"/>
+            <xs:element name="lastName" type="xs:string"/>
+            <xs:element name="email" type="xs:string"/>
+            <xs:element name="login" type="xs:string"/>
+            <xs:element name="mobilePhone" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+</xs:schema>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://milan.com/iis/oktauser/soap"
+           xmlns:tns="http://milan.com/iis/oktauser/soap"
+           elementFormDefault="qualified">
+
+    <xs:element name="searchOktaUsersRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="term" type="xs:string"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="searchOktaUsersResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="users" minOccurs="0" maxOccurs="1">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="user" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="id" type="xs:string" minOccurs="0"/>
+                                        <xs:element name="firstName" type="xs:string" minOccurs="0"/>
+                                        <xs:element name="lastName" type="xs:string" minOccurs="0"/>
+                                        <xs:element name="email" type="xs:string" minOccurs="0"/>
+                                        <xs:element name="login" type="xs:string" minOccurs="0"/>
+                                        <xs:element name="mobilePhone" type="xs:string" minOccurs="0"/>
+                                        <xs:element name="sourceType" type="xs:string" minOccurs="0"/>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType>
+                </xs:element>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+</xs:schema>

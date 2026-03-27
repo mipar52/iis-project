@@ -8,13 +8,16 @@ import lombok.AllArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
 import org.springframework.graphql.data.method.annotation.QueryMapping;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
 
-@RestController
+@Controller
 @AllArgsConstructor
 public class GraphQlController {
     private final UserRepository userRepository;
@@ -25,17 +28,17 @@ public class GraphQlController {
     }
 
     @QueryMapping
-    public OktaUser user(@Argument String id) {
+    public OktaUser user(@Argument("id") String id) {
         return userRepository.findById(id).orElse(null);
     }
 
-    @QueryMapping
-    public OktaUser createUser(@Argument CreateUserInput createUserInput) {
+    @MutationMapping
+    public OktaUser createUser(@Argument("input") CreateUserInput createUserInput) {
         OktaUser oktaUser = new OktaUser();
         oktaUser.setId(generateOktaLikeId());
 
-        oktaUser.setStatus(createUserInput.status() != null ? createUserInput.status() : "ACTIVE");
-        Instant now = Instant.now();
+        oktaUser.setStatus(createUserInput.status != null ? createUserInput.status() : "ACTIVE");
+        OffsetDateTime now = OffsetDateTime.now(ZoneOffset.UTC);
         oktaUser.setCreated(now);
         oktaUser.setActivated(now);
         oktaUser.setLastUpdated(now);
@@ -61,12 +64,12 @@ public class GraphQlController {
     }
 
     @MutationMapping
-    public OktaUser updateUser(@Argument String id, @Argument UpdateUserInput updateUserInput) {
+    public OktaUser updateUser(@Argument String id, @Argument("input") UpdateUserInput updateUserInput) {
         OktaUser oktaUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found!"));
 
         if (updateUserInput.status() != null) {
             oktaUser.setStatus(updateUserInput.status());
-            oktaUser.setStatusChanged(Instant.now());
+            oktaUser.setStatusChanged(OffsetDateTime.now(ZoneOffset.UTC));
         }
 
         if (updateUserInput.profile() != null) {
@@ -86,13 +89,13 @@ public class GraphQlController {
             oktaUser.getType().setId(updateUserInput.type().id());
         }
 
-        oktaUser.setLastUpdated(Instant.now());
+        oktaUser.setLastUpdated(OffsetDateTime.now(ZoneOffset.UTC));
 
         return userRepository.save(oktaUser);
     }
 
-    @QueryMapping
-    public Boolean deleteUser(@Argument String id) {
+    @MutationMapping
+    public Boolean deleteUser(@Argument("id") String id) {
         if (!userRepository.existsById(id)) return false;
         userRepository.deleteById(id);
         return true;

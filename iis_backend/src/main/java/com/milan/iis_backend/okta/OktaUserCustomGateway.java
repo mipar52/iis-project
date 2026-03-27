@@ -12,6 +12,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.List;
 import java.util.UUID;
 
@@ -46,7 +48,7 @@ public class OktaUserCustomGateway implements UserGateway {
     @Override
     public OktaUserDto update(String id, UpdateOktaUserDto updateOktaUserDto) {
         OktaUser user = userRepository.findById(id).orElseThrow();
-        user.setLastUpdated(Instant.now());
+        user.setLastUpdated(OffsetDateTime.now(ZoneOffset.UTC));
 
         OktaUser saved = userRepository.save(user);
         return toDto(saved);

@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,12 +21,12 @@ public class OktaUser {
 
     private String status;
 
-    private Instant created;
-    private Instant activated;
-    private Instant statusChanged;
-    private Instant lastLogin;
-    private Instant lastUpdated;
-    private Instant passwordChanged;
+    private OffsetDateTime created;
+    private OffsetDateTime activated;
+    private OffsetDateTime statusChanged;
+    private OffsetDateTime lastLogin;
+    private OffsetDateTime lastUpdated;
+    private OffsetDateTime passwordChanged;
 
     @Embedded
     @AttributeOverride(name = "id", column = @Column(name = "type_id"))

@@ -1,0 +1,95 @@
+scalar DateTime
+
+type Query {
+  users: [OktaUser!]!
+  user(id: ID!): OktaUser
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): OktaUser!
+  updateUser(id: ID!, input: UpdateUserInput!): OktaUser!
+  deleteUser(id: ID!): Boolean!
+}
+
+type OktaUser {
+  id: ID!
+  status: String
+  created: DateTime
+  activated: DateTime
+  statusChanged: DateTime
+  lastLogin: DateTime
+  lastUpdated: DateTime
+  passwordChanged: DateTime
+  type: OktaUserType
+  profile: OktaUserProfile
+  credentials: OktaUserCredentials
+  _links: OktaLinks
+}
+
+type OktaUserType {
+  id: String
+}
+
+type OktaUserProfile {
+  firstName: String
+  lastName: String
+  mobilePhone: String
+  secondEmail: String
+  login: String
+  email: String
+}
+
+type OktaUserCredentials {
+  provider: OktaProvider
+  password: OktaPassword
+}
+
+type OktaProvider {
+  type: String
+  name: String
+}
+
+type OktaPassword {
+  _empty: String
+}
+
+type OktaLinks {
+  self: OktaSelfLink
+}
+type OktaSelfLink {
+  href: String
+}
+
+input CreateUserInput {
+  profile: CreateProfileInput!
+  type: TypeInput
+  status: String
+}
+
+input UpdateUserInput {
+  profile: UpdateProfileInput
+  type: TypeInput
+  status: String
+}
+
+input CreateProfileInput {
+  firstName: String!
+  lastName: String!
+  login: String!
+  email: String!
+  mobilePhone: String
+  secondEmail: String
+}
+
+input UpdateProfileInput {
+  firstName: String
+  lastName: String
+  login: String
+  email: String
+  mobilePhone: String
+  secondEmail: String
+}
+
+input TypeInput {
+  id: String
+}

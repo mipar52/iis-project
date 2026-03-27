@@ -8,17 +8,18 @@ import com.milan.iis_backend.model.okta.OktaUserType;
 import lombok.Data;
 
 import java.time.Instant;
+import java.time.OffsetDateTime;
 
 @Data
 public class OktaUserDto {
     private String id;
     private String status;
-    private Instant created;
-    private Instant activated;
-    private Instant statusChanged;
-    private Instant lastLogin;
-    private Instant lastUpdated;
-    private Instant passwordChanged;
+    private OffsetDateTime created;
+    private OffsetDateTime activated;
+    private OffsetDateTime statusChanged;
+    private OffsetDateTime lastLogin;
+    private OffsetDateTime lastUpdated;
+    private OffsetDateTime passwordChanged;
 
     private OktaUserType type;
     private OktaUserProfile profile;

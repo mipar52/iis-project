@@ -8,8 +8,8 @@ Maven:
 ```
 
 ```bash
-# generate - xml, grcp
-
+# generate - xml, grcp, graphql
+./mvnw -q clean generate-sources
 ```
 
 Quick test endpoints:
@@ -81,6 +81,39 @@ curl -i -X POST http://localhost:8081/api/v1/users \
     },
     "type": { "id":"oty1192io1nxYU7Lq6767" }
   }'
+```
+
+GraphQL:
+
+- Get user:
+```bash
+curl -i -X POST http://localhost:8081/graphql \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <ACCESS_TOKEN>" \
+  -d '{"query":"query { user(id: \"00uXXXXXXXXXXXXXXX\") { id status profile { firstName lastName login email } } }"}'
+```
+
+- create user:
+```bash
+curl -i -X POST http://localhost:8081/graphql \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <ACCESS_TOKEN>" \
+  -d '{"query":"mutation { createUser(input: { status: \"ACTIVE\", type: { id: \"employee\" }, profile: { firstName: \"Branko\", lastName: \"Kockica\", login: \"bkocka@algebra.hr\", email: \"bkocka@algebra.hr\", mobilePhone: \"+385911234567\" } }) { id status created profile { firstName lastName login email mobilePhone } type { id } } }"}'
+```
+
+- update user:
+```bash
+curl -i -X POST http://localhost:8081/graphql \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <ACCESS_TOKEN>" \
+  -d '{"query":"mutation { updateUser(id: \"00uXXXXXXXXXXXXXXX\", input: { status: \"SUSPENDED\", profile: { mobilePhone: \"+385911111111\" } }) { id status lastUpdated profile { firstName lastName login email mobilePhone } } }"}'
+```
+- delete user:
+```bash
+curl -i -X POST http://localhost:8081/graphql \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer <ACCESS_TOKEN>" \
+  -d '{"query":"mutation { deleteUser(id: \"00uXXXXXXXXXXXXXXX\") }"}'
 ```
 
 TODO:

@@ -3,7 +3,6 @@ package com.milan.iis_backend.utils;
 import com.milan.iis_backend.model.okta.OktaUser;
 import com.milan.iis_backend.model.okta.OktaUserProfile;
 import com.milan.iis_backend.model.okta.dto.OktaUserDto;
-import com.milan.iis_backend.model.okta.dto.json.OktaUserJson;
 import com.milan.iis_backend.model.okta.dto.xml.OktaUserXml;
 
 import java.time.OffsetDateTime;
@@ -53,27 +52,27 @@ public class OktaUtils {
         return user;
     }
 
-    public static OktaUser toOktaUserFromJson(OktaUserJson json, OffsetDateTime time) {
-        OktaUser user = new OktaUser();
-        user.setId(OktaUtils.generateOktaId());
-        user.setStatus(json.status);
-        OktaUserProfile profile = new OktaUserProfile();
-        profile.setFirstName(json.profile.firstName);
-        profile.setLastName(json.profile.lastName);
-        profile.setEmail(json.profile.email);
-        profile.setLogin(json.profile.login);
-        profile.setMobilePhone(json.profile.mobilePhone);
-        user.setProfile(profile);
-
-        user.setCreated(time);
-        user.setActivated(time);
-        user.setStatusChanged(time);
-        user.setLastLogin(time);
-        user.setLastUpdated(time);
-        user.setPasswordChanged(time);
-
-        return user;
-    }
+//    public static OktaUser toOktaUserFromJson(OktaUserJson json, OffsetDateTime time) {
+//        OktaUser user = new OktaUser();
+//        user.setId(OktaUtils.generateOktaId());
+//        user.setStatus(json.status);
+//        OktaUserProfile profile = new OktaUserProfile();
+//        profile.setFirstName(json.profile.firstName);
+//        profile.setLastName(json.profile.lastName);
+//        profile.setEmail(json.profile.email);
+//        profile.setLogin(json.profile.login);
+//        profile.setMobilePhone(json.profile.mobilePhone);
+//        user.setProfile(profile);
+//
+//        user.setCreated(time);
+//        user.setActivated(time);
+//        user.setStatusChanged(time);
+//        user.setLastLogin(time);
+//        user.setLastUpdated(time);
+//        user.setPasswordChanged(time);
+//
+//        return user;
+//    }
 
     public static OktaUserDto toDto(OktaUser user) {
         OktaUserDto dto = new OktaUserDto();

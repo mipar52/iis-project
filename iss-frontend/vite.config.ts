@@ -1,7 +1,25 @@
-import { defineConfig } from 'vite'
-import react from '@vitejs/plugin-react'
+import { defineConfig } from "vite";
+import react from "@vitejs/plugin-react";
 
-// https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
-})
+  server: {
+    proxy: {
+      // REST endpoints
+      "/api": {
+        target: "http://localhost:8081",
+        changeOrigin: true,
+      },
+      // GraphQL endpoint
+      "/graphql": {
+        target: "http://localhost:8081",
+        changeOrigin: true,
+      },
+      // SOAP endpoint
+      "/ws": {
+        target: "http://localhost:8081",
+        changeOrigin: true,
+      },
+    },
+  },
+});

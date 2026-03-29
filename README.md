@@ -1,5 +1,12 @@
 # iis-project
 
+Frontend client:
+```bash
+cd iss-fronend
+npm i
+npm run dev
+```
+
 Maven:
 
 ```bash

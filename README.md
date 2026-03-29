@@ -1,5 +1,13 @@
 # iis-project
 
+## Okta
+
+Okta documentation: https://developer.okta.com/docs/api/openapi/asa/asa/users
+
+### Okta domain
+- Main URL: https://integrator-2485227-admin.okta.com/admin/users
+- Users: https://integrator-2485227-admin.okta.com/admin/users
+
 Frontend client:
 ```bash
 cd iss-fronend
@@ -125,4 +133,5 @@ curl -i -X POST http://localhost:8081/graphql \
 
 TODO:
 - Better error handling
-- React client!
+- OKTA - in app auth kad je public API
+- Napravit malo bolje auth!

@@ -63,7 +63,7 @@ export default function App() {
           <Tab label="1) Auth" />
           <Tab label="2) REST XML/JSON import" />
           <Tab label="3) TURBO SAPUN" />
-          <Tab label="4) DHMZ (gRPC)" />
+          <Tab label="4) MEGA VRIJEME (gRPC)" />
           <Tab label="5) GraphQL" />
         </Tabs>
       </AppBar>

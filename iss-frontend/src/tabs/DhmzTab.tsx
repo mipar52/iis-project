@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Alert,
   Box,
   Button,
   Card,
   CardContent,
+  Chip,
   Table,
   TableBody,
   TableCell,
@@ -13,35 +14,98 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { httpJson } from "../api/http";
+import { getAccessToken, httpJson } from "../api/http";
 
 type WeatherMatch = {
   city: string;
   temperature: number;
   unit?: string;
+  weather?: string;
 };
 
 type WeatherResponse = {
   matches: WeatherMatch[];
 };
 
+function weatherKind(w?: string): "sun" | "cloud" | "rain" | "wind" | "other" {
+  const s = (w ?? "").toLowerCase();
+
+  if (
+    s.includes("kiša") ||
+    s.includes("kisa") ||
+    s.includes("pljus") ||
+    s.includes("grml")
+  )
+    return "rain";
+  if (s.includes("obla")) return "cloud";
+  if (s.includes("vedro") || s.includes("sun")) return "sun";
+  if (s.includes("vjet")) return "wind";
+  return "other";
+}
+
+function weatherRowSx(w?: string) {
+  const k = weatherKind(w);
+  switch (k) {
+    case "rain":
+      return { backgroundColor: "rgba(33, 150, 243, 0.08)" }; // plava
+    case "cloud":
+      return { backgroundColor: "rgba(158, 158, 158, 0.10)" }; // siva
+    case "sun":
+      return { backgroundColor: "rgba(255, 193, 7, 0.12)" }; // žuta
+    case "wind":
+      return { backgroundColor: "rgba(0, 188, 212, 0.08)" }; // cyan
+    default:
+      return {};
+  }
+}
+
+function weatherChip(w?: string) {
+  const k = weatherKind(w);
+  const label = w ?? "-";
+  const color =
+    k === "rain"
+      ? "primary"
+      : k === "sun"
+        ? "warning"
+        : k === "cloud"
+          ? "default"
+          : k === "wind"
+            ? "info"
+            : "default";
+  return (
+    <Chip
+      size="small"
+      label={label}
+      color={color as any}
+      variant={k === "cloud" ? "outlined" : "filled"}
+    />
+  );
+}
+
 export default function DhmzTab() {
   const [query, setQuery] = useState("zag");
   const [data, setData] = useState<WeatherResponse | null>(null);
   const [err, setErr] = useState<string | null>(null);
 
+  const headers = useMemo(() => {
+    const h: Record<string, string> = {};
+    const token = getAccessToken();
+    if (token) h["Authorization"] = `Bearer ${token}`;
+    return h;
+  }, []);
+
   async function search() {
     setErr(null);
     setData(null);
 
-    // REST proxy endpoint (treba postojati na backendu)
-    const res = await httpJson<WeatherResponse>(
-      `/api/weather/search?query=${encodeURIComponent(query)}`,
+    const wres = await httpJson<WeatherResponse>(
+      `/api/weather/search?q=${encodeURIComponent(query)}`,
       {
         method: "GET",
+        headers: headers,
       },
     );
-    setData(res);
+    setData(wres);
   }
 
   return (
@@ -87,14 +151,16 @@ export default function DhmzTab() {
                     <TableCell>City</TableCell>
                     <TableCell>Temperature</TableCell>
                     <TableCell>Unit</TableCell>
+                    <TableCell>Weather</TableCell>
                   </TableRow>
                 </TableHead>
                 <TableBody>
                   {(data.matches || []).map((m, i) => (
-                    <TableRow key={i}>
+                    <TableRow key={i} sx={weatherRowSx(m.weather)}>
                       <TableCell>{m.city}</TableCell>
                       <TableCell>{m.temperature}</TableCell>
                       <TableCell>{m.unit ?? "°C"}</TableCell>
+                      <TableCell>{weatherChip(m.weather)}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

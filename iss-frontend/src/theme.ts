@@ -39,6 +39,7 @@ export const theme = createTheme({
         indicator: {
           height: 4,
           borderRadius: 999,
+          backgroundColor: "rgba(255,255,255,0.95)", // boja indikatora
         },
       },
     },
@@ -47,6 +48,24 @@ export const theme = createTheme({
         root: {
           textTransform: "none",
           fontWeight: 600,
+          color: "rgba(255,255,255,0.72)",
+          minHeight: 56,
+          transition: "all 120ms ease",
+
+          "&:hover": {
+            color: "rgba(255,255,255,0.95)",
+            backgroundColor: "rgba(255,255,255,0.10)",
+          },
+
+          "&.Mui-selected": {
+            color: "#ffffff",
+            backgroundColor: "rgba(0,0,0,0.18)",
+            borderRadius: 12,
+          },
+
+          "&.Mui-disabled": {
+            color: "rgba(255,255,255,0.35)",
+          },
         },
       },
     },

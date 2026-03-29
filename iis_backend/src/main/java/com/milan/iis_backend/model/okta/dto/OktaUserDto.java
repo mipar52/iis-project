@@ -14,14 +14,7 @@ import java.time.OffsetDateTime;
 public class OktaUserDto {
     private String id;
     private String status;
-    private OffsetDateTime created;
-    private OffsetDateTime activated;
-    private OffsetDateTime statusChanged;
-    private OffsetDateTime lastLogin;
-    private OffsetDateTime lastUpdated;
-    private OffsetDateTime passwordChanged;
 
-    private OktaUserType type;
     private OktaUserProfile profile;
     private OktaUserCredentials credentials;
 

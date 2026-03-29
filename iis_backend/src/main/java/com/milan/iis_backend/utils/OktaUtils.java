@@ -1,5 +1,6 @@
 package com.milan.iis_backend.utils;
 
+import com.milan.iis_backend.controller.GraphQlController;
 import com.milan.iis_backend.model.okta.OktaUser;
 import com.milan.iis_backend.model.okta.OktaUserProfile;
 import com.milan.iis_backend.model.okta.dto.OktaUserDto;
@@ -76,9 +77,11 @@ public class OktaUtils {
 
     public static OktaUserDto toDto(OktaUser user) {
         OktaUserDto dto = new OktaUserDto();
+        dto.setId(user.getId());
         dto.setStatus(user.getStatus());
         dto.setProfile(user.getProfile());
         dto.setCredentials(user.getCredentials());
         return dto;
     }
+
 }

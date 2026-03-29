@@ -50,7 +50,7 @@ public class OktaUserPublicGateway implements  UserGateway {
     @Override
     public OktaUserDto update(String id, UpdateOktaUserDto updateOktaUserDto) {
         return oktaClient.put()
-                .uri("/api/v1/users/{id}", id)
+                .uri("/api/v1/users/{id}?sendEmail=false", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(updateOktaUserDto)
                 .retrieve()
@@ -60,7 +60,7 @@ public class OktaUserPublicGateway implements  UserGateway {
     @Override
     public void delete(String id) {
         oktaClient.delete()
-                .uri("/api/v1/users/{id}", id)
+                .uri("/api/v1/users/{id}?sendEmail=false", id)
                 .retrieve()
                 .toBodilessEntity();
     }

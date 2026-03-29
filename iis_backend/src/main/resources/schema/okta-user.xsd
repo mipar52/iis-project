@@ -4,17 +4,71 @@
            xmlns:tns="http://milan.com/iis/oktauser/xml"
            elementFormDefault="qualified">
 
+    <!-- ROOT -->
     <xs:element name="oktaUser" type="tns:OktaUserType"/>
 
+    <!-- OktaUserDto -->
     <xs:complexType name="OktaUserType">
         <xs:sequence>
             <xs:element name="id" type="xs:string" minOccurs="0"/>
-            <xs:element name="sourceType" type="xs:string" minOccurs="0"/>
-            <xs:element name="firstName" type="xs:string"/>
-            <xs:element name="lastName" type="xs:string"/>
-            <xs:element name="email" type="xs:string"/>
-            <xs:element name="login" type="xs:string"/>
+            <xs:element name="status" type="xs:string" minOccurs="0"/>
+
+            <xs:element name="profile" type="tns:OktaUserProfileType"/>
+            <xs:element name="credentials" type="tns:OktaUserCredentialsType" minOccurs="0"/>
+
+            <!-- JSON field name is _links; for XML we can keep "_links" or rename to "links".
+                 If you want to keep exactly "_links", keep it as below. -->
+            <xs:element name="_links" type="tns:OktaLinksType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- OktaUserProfile -->
+    <xs:complexType name="OktaUserProfileType">
+        <xs:sequence>
+            <xs:element name="firstName" type="xs:string" minOccurs="0"/>
+            <xs:element name="lastName" type="xs:string" minOccurs="0"/>
+
             <xs:element name="mobilePhone" type="xs:string" minOccurs="0"/>
+            <xs:element name="secondEmail" type="xs:string" minOccurs="0"/>
+
+            <!-- NOT NULL in DB => required in XML -->
+            <xs:element name="login" type="xs:string"/>
+            <xs:element name="email" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- OktaUserCredentials -->
+    <xs:complexType name="OktaUserCredentialsType">
+        <xs:sequence>
+            <xs:element name="password" type="tns:OktaPasswordType" minOccurs="0"/>
+            <xs:element name="provider" type="tns:OktaProviderType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="OktaPasswordType">
+        <xs:sequence>
+            <!-- ubaci stvarna polja ako ih imaš; za sad placeholder -->
+            <xs:element name="value" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="OktaProviderType">
+        <xs:sequence>
+            <xs:element name="type" type="xs:string" minOccurs="0"/>
+            <xs:element name="name" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <!-- OktaLinks -->
+    <xs:complexType name="OktaLinksType">
+        <xs:sequence>
+            <xs:element name="self" type="tns:OktaLinkSelfType" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="OktaLinkSelfType">
+        <xs:sequence>
+            <xs:element name="href" type="xs:string" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
 

@@ -1,12 +1,59 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "type":"object",
+  "$id": "http://milan.com/iis/oktauser/json-schema/okta-user.schema.json",
+  "title": "OktaUserDto",
+  "type": "object",
   "additionalProperties": false,
   "properties": {
-    "firstName": {"type": "string", "minLength": 1},
-    "lastName":{"type": "string", "minLength": 1},
-    "email":{"type": "string", "format": "email"},
-    "login":{"type": "string", "minLength": 1},
-    "mobilePhone":{"type": "string"}
-  }
+    "id": { "type": "string", "minLength": 1 },
+    "status": { "type": "string", "minLength": 1 },
+
+    "profile": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "firstName": { "type": "string", "minLength": 1 },
+        "lastName": { "type": "string", "minLength": 1 },
+        "email": { "type": "string", "format": "email" , "minLength": 1},
+        "login": { "type": "string", "minLength": 1 },
+        "mobilePhone": { "type": "string" },
+        "secondEmail": { "type": "string", "format": "email" }
+      },
+      "required": ["email", "login"]
+    },
+
+    "credentials": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "password": {
+          "type": "object",
+          "additionalProperties": true
+        },
+        "provider": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "type": { "type": "string" },
+            "name": { "type": "string" }
+          }
+        }
+      }
+    },
+
+    "_links": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "self": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "href": { "type": "string", "minLength": 1 }
+          }
+        }
+      }
+    }
+  },
+  "required": ["profile"]
 }

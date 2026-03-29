@@ -1,7 +1,18 @@
 {
-  "firstName": "Branko",
-  "lastName": "Kockica",
-  "email": "bkocka@algebra.hr",
-  "login": "bkocka@algebra.hr",
-  "mobilePhone": "+385911234567"
+  "id": "00u123example",
+  "status": "ACTIVE",
+  "profile": {
+    "firstName": "Marija",
+    "lastName": "Bandic",
+    "email": "mbandinc@algebra.hr",
+    "login": "mbandinc@algebra.hr",
+    "mobilePhone": "+38591129485",
+    "secondEmail": "mbandina@algebra.hr"
+  },
+  "credentials": {
+    "provider": { "type": "OKTA", "name": "OKTA" }
+  },
+  "_links": {
+    "self": { "href": "http://localhost:8081/api/v1/users/00u123example" }
+  }
 }

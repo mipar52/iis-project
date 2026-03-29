@@ -60,11 +60,11 @@ public class AuthService {
 
         String access = jwtService.generateAccessToken(appUser.getUsername());
         String refresh = issueRefreshToken(appUser);
-
         return new TokenResponse(access, refresh);
     }
 
     public TokenResponse refresh(String refreshTokenValue) {
+        System.out.println("Getting refresh token: " + refreshTokenValue);
         RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenValue)
                 .orElseThrow(() -> (new RuntimeException("Invalid refresh token!")));
 
@@ -81,6 +81,7 @@ public class AuthService {
     }
 
     public void revokeRefreshToken(String refreshTokenValue) {
+        System.out.println("Revoking token: " + refreshTokenValue);
         RefreshToken refreshToken = refreshTokenRepository.findByToken(refreshTokenValue).orElseThrow(() -> new RuntimeException("Invalid refresh token!"));
         if (refreshToken.isRevoked()) throw new RuntimeException("Refresh token revoked!");
 
@@ -95,6 +96,7 @@ public class AuthService {
         refreshToken.setUser(appUser);
         refreshToken.setExpiresAt(Instant.now().plusSeconds(refreshTtlSeconds));
         refreshToken.setRevoked(false);
+        System.out.println("Issued refresh token: " + refreshToken.getToken());
         refreshTokenRepository.save(refreshToken);
         return token;
     }

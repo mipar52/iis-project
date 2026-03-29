@@ -5,6 +5,7 @@ import com.milan.iis_backend.security.auth.RefreshRequest;
 import com.milan.iis_backend.security.auth.TokenResponse;
 import com.milan.iis_backend.security.auth.services.AuthService;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.antlr.v4.runtime.Token;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/auth")
 @AllArgsConstructor
+@Slf4j
 public class AuthController {
     private final AuthService authService;
 
@@ -29,6 +31,7 @@ public class AuthController {
 
     @PostMapping("/refresh")
     public TokenResponse refresh(@RequestBody RefreshRequest request) {
+        log.info("Calling public TokenResponse refresh(@RequestBody RefreshRequest request)");
         return authService.refresh(request.getRefreshToken());
     }
 

@@ -1,16 +1,13 @@
 package com.milan.iis_backend.controller;
 
 import com.milan.iis_backend.model.okta.OktaUser;
-import com.milan.iis_backend.model.okta.OktaUserCredentials;
 import com.milan.iis_backend.model.okta.dto.OktaUserDto;
-import com.milan.iis_backend.model.okta.dto.json.OktaUserJson;
 import com.milan.iis_backend.model.okta.dto.xml.OktaUserXml;
 import com.milan.iis_backend.repository.UserRepository;
 import com.milan.iis_backend.service.interfaces.exports.JsonImportService;
 import com.milan.iis_backend.service.interfaces.exports.XmlImportService;
 import com.milan.iis_backend.utils.OktaUtils;
 import lombok.AllArgsConstructor;
-import org.apache.coyote.Response;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -84,7 +81,6 @@ public class ImportController {
     public ResponseEntity<List<OktaUserDto>> getUsers() {
         return ResponseEntity.ok(userRepository.findAll().stream().map(OktaUtils::toDto).toList());
     }
-
 
     public record ValidationError(String field, String message) {}
     public record ImportResult(List<String> savedIds, List<ValidationError> errors) {}

@@ -6,6 +6,7 @@ import com.milan.iis_backend.model.okta.dto.CreateOktaUserDto;
 import com.milan.iis_backend.model.okta.dto.OktaUserDto;
 import com.milan.iis_backend.model.okta.dto.UpdateOktaUserDto;
 import com.milan.iis_backend.repository.UserRepository;
+import com.milan.iis_backend.utils.OktaUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -26,12 +27,12 @@ public class OktaUserCustomGateway implements UserGateway {
 
     @Override
     public List<OktaUserDto> list() {
-        return userRepository.findAll().stream().map(this::toDto).toList();
+        return userRepository.findAll().stream().map(OktaUtils::toDto).toList();
     }
 
     @Override
     public OktaUserDto get(String id) {
-        return userRepository.findById(id).stream().map(this::toDto)
+        return userRepository.findById(id).stream().map(OktaUtils::toDto)
                 .findFirst()
                 .orElse(null);
     }
@@ -42,7 +43,7 @@ public class OktaUserCustomGateway implements UserGateway {
         user.setId(generateOktaId());
         user.setProfile(toOktaProfile(createOktaUserDto.getProfile()));
         OktaUser saved = userRepository.save(user);
-        return toDto(saved);
+        return OktaUtils.toDto(saved);
     }
 
     @Override
@@ -51,7 +52,7 @@ public class OktaUserCustomGateway implements UserGateway {
         user.setLastUpdated(OffsetDateTime.now(ZoneOffset.UTC));
 
         OktaUser saved = userRepository.save(user);
-        return toDto(saved);
+        return OktaUtils.toDto(saved);
     }
 
     @Override
@@ -59,18 +60,6 @@ public class OktaUserCustomGateway implements UserGateway {
         userRepository.deleteById(id);
     }
 
-    private OktaUserDto toDto(OktaUser user) {
-        OktaUserDto dto = new OktaUserDto();
-        dto.setStatus(user.getStatus());
-        dto.setCreated(user.getCreated());
-        dto.setActivated(user.getActivated());
-        dto.setStatusChanged(user.getStatusChanged());
-        dto.setLastLogin(user.getLastLogin());
-        dto.setType(user.getType());
-        dto.setProfile(user.getProfile());
-        dto.setCredentials(user.getCredentials());
-        return dto;
-    }
 
     private OktaUserProfile toOktaProfile(CreateOktaUserDto.Profile profile) {
         OktaUserProfile oktaUserProfile = new OktaUserProfile();

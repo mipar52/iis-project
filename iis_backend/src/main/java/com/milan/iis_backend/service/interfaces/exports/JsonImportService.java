@@ -1,7 +1,8 @@
 package com.milan.iis_backend.service.interfaces.exports;
 
-import com.milan.iis_backend.model.okta.OktaUserJson;
+import com.milan.iis_backend.model.okta.dto.OktaUserDto;
+import com.milan.iis_backend.model.okta.dto.json.OktaUserJson;
 
 public interface JsonImportService {
-    public OktaUserJson validateAndParse(byte[] jsonBytes) throws Exception;
+    public OktaUserDto validateAndParse(byte[] jsonBytes) throws Exception;
 }

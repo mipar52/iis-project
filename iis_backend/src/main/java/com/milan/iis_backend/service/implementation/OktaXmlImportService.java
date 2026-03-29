@@ -1,6 +1,7 @@
 package com.milan.iis_backend.service.implementation;
 
-import com.milan.iis_backend.model.okta.OktaUserXml;
+import com.milan.iis_backend.model.okta.dto.OktaUserDto;
+import com.milan.iis_backend.model.okta.dto.xml.OktaUserXml;
 import com.milan.iis_backend.service.interfaces.exports.XmlImportService;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.Unmarshaller;

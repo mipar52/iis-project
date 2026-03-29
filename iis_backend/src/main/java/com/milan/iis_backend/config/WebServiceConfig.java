@@ -36,6 +36,6 @@ public class WebServiceConfig extends WsConfigurationSupport {
 
     @Bean
     public XsdSchema oktaUserSchema() {
-        return new SimpleXsdSchema(new ClassPathResource("soap/oktauser-soap.xsd"));
+        return new SimpleXsdSchema(new ClassPathResource("static/wsdl/oktauser-soap.xsd"));
     }
 }

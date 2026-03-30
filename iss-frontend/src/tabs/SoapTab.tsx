@@ -16,6 +16,7 @@ import {
   Typography,
 } from "@mui/material";
 import { httpText } from "../api/http";
+import InfoButton from "../components/InfoButton";
 
 type SoapUser = {
   id?: string;
@@ -161,6 +162,22 @@ export default function SoapTab() {
           <Typography variant="body2" sx={{ color: "text.secondary", mb: 1 }}>
             Endpoint: POST /ws (SOAP Envelope)
           </Typography>
+          <InfoButton
+            text="SOAP sučelje koje uključuje uslugu koja prima pojam prema kojem se traži
+entitet. Prije toga, na backendu se mora generirati XML datoteka koja sadrži
+podatke dohvaćene iz jedne od REST API metoda prema zadanoj temi.
+Uneseni pojam, koji je ulazni podatak SOAP metode, mora se koristiti za
+filtriranje samo onih zapisa koji odgovaraju zadanom pojmu uz pomoć XPath-a
+i pripremljene XML datoteke, te ih vratiti kao rezultat poziva SOAP metode.
+(LO2 – 4 boda, LO3 – 2 boda, LO5 – 4 boda)
+
+
+Koristeći Jakarta XML, provjerite pripremljenu datoteku iz prethodnog koraka
+kako biste vidjeli je li u skladu s postavljenim pravilima validacije i vratite
+poruke o validaciji ako podaci u XML datoteci nisu valjani. (LO2 – 4 boda, LO5
+– 2 boda; LO7 – 2 boda)"
+            title="Tab 3 — SOAP: search (generiranje XML + XPath + validacija) (Opis zadatka)"
+          />
           <TextField
             label="Term"
             fullWidth

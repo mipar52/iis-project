@@ -10,6 +10,7 @@ import {
   Typography,
 } from "@mui/material";
 import { getAccessToken } from "../api/http";
+import InfoButton from "../components/InfoButton";
 
 type ApiResult = { kind: "import"; data: any } | { kind: "users"; data: any };
 
@@ -98,6 +99,17 @@ export default function ImportTab() {
       <Typography variant="h5" gutterBottom>
         Import (XML/JSON) + pregled korisnika
       </Typography>
+      <InfoButton
+        title="Tab 2 — REST XML/JSON import (Opis zadatka)"
+        text={`REST API sučelje koje uključuje servis (endpoint) koja će biti pozvana POST
+metodom i poslati XML i JSON datoteku. XML i JSON datoteke moraju
+sadržavati proizvoljne podatke za entitet koji je vezan za domenu zadanog
+REST API sučelja. Zadani entitet prvo se mora validirati, provjeriti jesu li svi
+zadani podaci ispravni pomoću XSD i JSON validacije datoteke sheme, a tek
+zatim ga spremiti u bazu podataka sustava. U slučaju pogrešaka, potrebno je
+korisniku prikazati pogreške validacije. (LO2 – 2 boda, LO3 – 2 boda, LO5 – 2
+boda)`}
+      />
 
       <Stack spacing={2}>
         {err && <Alert severity="error">{err}</Alert>}

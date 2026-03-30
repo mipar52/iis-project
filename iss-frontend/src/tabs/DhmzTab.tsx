@@ -15,6 +15,7 @@ import {
   Typography,
 } from "@mui/material";
 import { getAccessToken, httpJson } from "../api/http";
+import InfoButton from "../components/InfoButton";
 
 type WeatherMatch = {
   city: string;
@@ -113,6 +114,16 @@ export default function DhmzTab() {
       <Typography variant="h5" gutterBottom>
         Tab 4 — DHMZ (gRPC server) — kroz REST proxy
       </Typography>
+
+      <InfoButton
+        text="Izradite gRPC poslužiteljsku aplikaciju koja će, koristeći DHMZ
+(https://vrijeme.hr/hrvatska_n.xml), omogućiti dohvaćanje trenutne
+temperature prema zadanom nazivu grada ili dijelu naziva grada. Ako postoji
+više unosa koji odgovaraju dijelu naziva grada, svi bi trebali biti ispisani.
+Usluga mora biti dostupna s klijentske radne površine ili web aplikacije. ( LO2
+– 4 boda, LO3 – 2 boda, LO5 – 2 boda)"
+        title="Tab 4 — DHMZ (gRPC server) — kroz REST proxy"
+      />
 
       <Alert severity="info" sx={{ mb: 2 }}>
         <b> GET /api/weather/search?query=...</b>

@@ -1,5 +1,7 @@
 package com.milan.iis_backend.security.jwt;
 
+import com.milan.iis_backend.model.users.AppUser;
+import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;
@@ -20,12 +22,13 @@ public class JWTService {
         this.accessTtlSeconds = accessTtlSeconds;
     }
 
-    public String generateAccessToken(String username) {
+    public String generateAccessToken(AppUser appUser) {
         Instant now = Instant.now();
         Instant expiryTime = now.plusSeconds(accessTtlSeconds);
 
         return Jwts.builder()
-                .subject(username)
+                .subject(appUser.getUsername())
+                .claim("role", appUser.getRole())
                 .issuedAt(Date.from(now))
                 .expiration(Date.from(expiryTime))
                 .signWith(secretKey)
@@ -39,5 +42,16 @@ public class JWTService {
                 .parseSignedClaims(jwt)
                 .getPayload()
                 .getSubject();
+    }
+
+    public String validateAndGetRole(String token) {
+        Object roleObject = Jwts.parser()
+                .verifyWith(secretKey)
+                .build()
+                .parseSignedClaims(token)
+                .getPayload()
+                .get("role");
+
+        return roleObject != null ? roleObject.toString() : null;
     }
 }

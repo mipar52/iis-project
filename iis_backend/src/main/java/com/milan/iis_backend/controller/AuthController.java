@@ -2,6 +2,7 @@ package com.milan.iis_backend.controller;
 
 import com.milan.iis_backend.security.auth.LoginRequest;
 import com.milan.iis_backend.security.auth.RefreshRequest;
+import com.milan.iis_backend.security.auth.RegisterRequest;
 import com.milan.iis_backend.security.auth.TokenResponse;
 import com.milan.iis_backend.security.auth.services.AuthService;
 import lombok.AllArgsConstructor;
@@ -20,8 +21,8 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public TokenResponse register(@RequestBody LoginRequest request) {
-        return authService.register(request.getUsername(), request.getPassword());
+    public TokenResponse register(@RequestBody RegisterRequest request) {
+        return authService.register(request.getUsername(), request.getPassword(), request.getRole());
     }
 
     @PostMapping("/login")

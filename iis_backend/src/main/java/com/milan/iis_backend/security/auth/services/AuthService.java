@@ -37,11 +37,19 @@ public class AuthService {
         this.refreshTtlSeconds = refreshTtlSeconds;
     }
 
-    public TokenResponse register(String username, String password) {
+    public TokenResponse register(String username, String password, String role) {
+        System.out.println("GOT ROLE: " + role);
         Optional<AppUser> appUser = appUserRepository.findByUsername(username);
         if (appUser.isPresent()) throw new RuntimeException("User already exists!");
         AppUser newAppUser = new AppUser();
         newAppUser.setUsername(username);
+
+        String normalized = (role == null || role.isBlank()) ? "USER" : role.trim().toUpperCase();
+        if (!normalized.equals("USER") && !normalized.equals("ADMIN")) {
+            throw new RuntimeException("Invalid role");
+        }
+        newAppUser.setRole(normalized);
+
         PasswordConfig config = new PasswordConfig();
         newAppUser.setPasswordHash(config.passwordEncoder().encode(password));
         appUserRepository.save(newAppUser);
@@ -58,7 +66,7 @@ public class AuthService {
             throw new RuntimeException("Bad credentials!");
         }
 
-        String access = jwtService.generateAccessToken(appUser.getUsername());
+        String access = jwtService.generateAccessToken(appUser);
         String refresh = issueRefreshToken(appUser);
         return new TokenResponse(access, refresh);
     }
@@ -71,7 +79,7 @@ public class AuthService {
         if (refreshToken.isRevoked()) throw new RuntimeException("Refresh token revoked!");
         if (refreshToken.getExpiresAt().isBefore(Instant.now())) throw new RuntimeException("Refresh token expired!");
 
-        String newAccessToken = jwtService.generateAccessToken(refreshToken.getUser().getUsername());
+        String newAccessToken = jwtService.generateAccessToken(refreshToken.getUser());
 
         refreshToken.setRevoked(true);
         refreshTokenRepository.save(refreshToken);

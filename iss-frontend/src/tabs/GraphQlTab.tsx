@@ -12,6 +12,7 @@ import {
   Typography,
 } from "@mui/material";
 import { httpJson } from "../api/http";
+import InfoButton from "../components/InfoButton";
 
 type GraphQlResponse = any;
 
@@ -137,6 +138,17 @@ export default function GraphqlTab() {
       <Typography variant="h5" gutterBottom>
         Tab 5 — GraphQL
       </Typography>
+
+      <InfoButton
+        text="Koristite REST API i integrirajte svoju aplikaciju s njim. Implementirajte
+prilagođenu verziju ovog REST API sučelja koja se povezuje s bazom
+podataka aplikacije i pruža sve četiri krajnje točke (GET, POST, PUT i
+DELETE) s JWT tokenima (access i refresh) te koristi GraphQL. Dodajte
+prekidač u konfiguraciju aplikacije koji će omogućiti promjenu s javnog na
+prilagođeno REST API sučelje (LO3 – 8 bodova, LO4 – 12 bodova, LO5 – 12
+bodova, LO6 – 2 boda, LO7 – 8 bodova)."
+        title="Tab 5 — GraphQL"
+      />
 
       <Card sx={{ mb: 2 }}>
         <CardContent>

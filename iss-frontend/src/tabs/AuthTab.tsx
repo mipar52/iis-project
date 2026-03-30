@@ -20,6 +20,7 @@ import {
   httpJson,
   REFRESH_TOKEN_KEY,
 } from "../api/http";
+import InfoButton from "../components/InfoButton";
 
 type AuthResponse = {
   accessToken: string;
@@ -139,6 +140,15 @@ export default function AuthTab() {
       <Typography variant="h5" gutterBottom>
         Tab 1 — Login / Registracija (JWT)
       </Typography>
+
+      <InfoButton
+        text="Napišite klijentsku desktop ili web aplikaciju (Java ili C#) koja će sadržavati
+grafičko sučelje i omogućiti korisnicima pozivanje usluge iz prvih šest koraka.
+Aplikacija mora imati dvije korisničke uloge: samo za čitanje (može pozivati
+samo krajnje točke GET) i potpuni pristup (može pozivati sve krajnje
+točke). (LO1 – 2 boda, LO3 – 4 boda, LO7 4 boda)"
+        title="Login / Registracija + React klijent"
+      />
 
       {err && (
         <Alert severity="error" sx={{ mb: 2 }}>

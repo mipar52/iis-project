@@ -7,6 +7,7 @@ import {
   CardContent,
   Divider,
   Grid,
+  MenuItem,
   TextField,
   Typography,
 } from "@mui/material";
@@ -30,6 +31,7 @@ export default function AuthTab() {
   const [loginPassword, setLoginPassword] = useState("test1");
   const [regUsername, setRegUsername] = useState("");
   const [regPassword, setRegPassword] = useState("");
+  const [regRole, setRegRole] = useState<"USER" | "ADMIN">("USER");
 
   const [manualToken, setManualToken] = useState("");
   const [status, setStatus] = useState<string | null>(null);
@@ -60,7 +62,11 @@ export default function AuthTab() {
     setErr(null);
     setStatus(null);
 
-    const body = { username: regUsername, password: regPassword };
+    const body = {
+      username: regUsername,
+      password: regPassword,
+      role: regRole,
+    };
     const res = await httpJson<any>("/api/auth/register", {
       method: "POST",
       body: JSON.stringify(body),
@@ -231,6 +237,18 @@ export default function AuthTab() {
                 value={regPassword}
                 onChange={(e) => setRegPassword(e.target.value)}
               />
+
+              <TextField
+                select
+                label="Role (dev)"
+                fullWidth
+                margin="normal"
+                value={regRole}
+                onChange={(e) => setRegRole(e.target.value as "USER" | "ADMIN")}
+              >
+                <MenuItem value="USER">USER</MenuItem>
+                <MenuItem value="ADMIN">ADMIN</MenuItem>
+              </TextField>
 
               <Button
                 variant="outlined"

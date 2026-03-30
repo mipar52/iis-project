@@ -91,7 +91,7 @@ export default function AuthTab() {
     const response = await httpJson<any>("/api/auth/refresh", {
       method: "POST",
       body: JSON.stringify(body),
-      auth: true, // refresh mora raditi i kad je access istekao
+      auth: true,
     });
 
     if (response.accessToken) setAccessToken(response.accessToken);

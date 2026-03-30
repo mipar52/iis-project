@@ -39,7 +39,7 @@ export const theme = createTheme({
         indicator: {
           height: 4,
           borderRadius: 999,
-          backgroundColor: "rgba(255,255,255,0.95)", // boja indikatora
+          backgroundColor: "rgba(255,255,255,0.95)",
         },
       },
     },

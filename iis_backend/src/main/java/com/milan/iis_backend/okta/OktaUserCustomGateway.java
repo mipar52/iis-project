@@ -1,7 +1,5 @@
 package com.milan.iis_backend.okta;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.milan.iis_backend.controller.GraphQlController;
 import com.milan.iis_backend.model.okta.*;
 import com.milan.iis_backend.model.okta.dto.CreateOktaUserDto;
 import com.milan.iis_backend.model.okta.dto.OktaUserDto;
@@ -10,11 +8,9 @@ import com.milan.iis_backend.model.okta.dto.UpdateOktaUserDto;
 import com.milan.iis_backend.repository.UserRepository;
 import com.milan.iis_backend.utils.OktaUtils;
 import lombok.AllArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
-import java.time.Instant;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
 import java.util.List;

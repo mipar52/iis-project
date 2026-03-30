@@ -1,7 +1,6 @@
 package com.milan.iis_backend.security.jwt;
 
 import com.milan.iis_backend.model.users.AppUser;
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.beans.factory.annotation.Value;

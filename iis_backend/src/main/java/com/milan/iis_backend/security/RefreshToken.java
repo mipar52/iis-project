@@ -3,7 +3,6 @@ package com.milan.iis_backend.security;
 import com.milan.iis_backend.model.users.AppUser;
 import jakarta.persistence.*;
 import lombok.Data;
-import org.checkerframework.checker.units.qual.C;
 
 import java.time.Instant;
 

@@ -1,6 +1,5 @@
 package com.milan.iis_backend.utils;
 
-import com.milan.iis_backend.controller.GraphQlController;
 import com.milan.iis_backend.model.okta.OktaUser;
 import com.milan.iis_backend.model.okta.OktaUserProfile;
 import com.milan.iis_backend.model.okta.dto.OktaUserDto;

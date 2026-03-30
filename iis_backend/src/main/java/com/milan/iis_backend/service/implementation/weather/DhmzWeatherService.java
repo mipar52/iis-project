@@ -1,6 +1,5 @@
 package com.milan.iis_backend.service.implementation.weather;
 
-import com.milan.iis_backend.grpc.CityTemperature;
 import com.milan.iis_backend.service.interfaces.grcp.CityTemp;
 import com.milan.iis_backend.service.interfaces.grcp.WeatherService;
 import org.springframework.stereotype.Service;

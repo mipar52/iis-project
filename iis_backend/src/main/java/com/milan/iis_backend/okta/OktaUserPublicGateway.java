@@ -4,7 +4,6 @@ import com.milan.iis_backend.model.okta.dto.CreateOktaUserDto;
 import com.milan.iis_backend.model.okta.dto.OktaUserDto;
 import com.milan.iis_backend.model.okta.dto.UpdateOktaUserDto;
 import lombok.AllArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;

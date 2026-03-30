@@ -9,7 +9,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.TransformerFactory;
@@ -23,9 +22,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
-
-import static org.springframework.data.jpa.repository.support.JpqlQueryTemplates.LOWER;
-import static org.springframework.data.jpa.repository.support.JpqlQueryTemplates.UPPER;
 
 @Service
 public class OktaUserXmlExportService implements XmlExportService {

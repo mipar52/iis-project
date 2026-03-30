@@ -1,7 +1,5 @@
 package com.milan.iis_backend.service.interfaces.exports;
 
-import com.milan.iis_backend.model.okta.OktaUser;
-import com.milan.iis_backend.model.okta.dto.OktaUserDto;
 import com.milan.iis_backend.model.okta.dto.xml.OktaUserXml;
 
 import java.io.InputStream;

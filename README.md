@@ -1,12 +1,82 @@
 # iis-project
 
+## App overview
+This project is a multi-interface backend + client “dashboard” application built to demonstrate several integration styles and validation techniques in one system.
+
+At a high level, the application:
+
+### Manages two different user concepts
+
+App Users: users of this application (stored in the app_users table). They authenticate via username/password, receive JWT access + refresh tokens, and have a role (USER or ADMIN) that controls what they are allowed to do.
+
+Okta Users (domain entity): a separate entity used for demonstrating XML/JSON import, SOAP filtering, and GraphQL operations. These are not the same as App Users.
+
+Exposes multiple APIs for different assignment points
+
+### REST Import (XML + JSON)
+A REST endpoint accepts XML and JSON files, validates:
+
+### XML against an XSD, and JSON against a JSON Schema
+
+If valid, the entity is stored in the database; if not, the API returns detailed validation errors.
+
+### SOAP Search with XPath + XML Validation
+
+The SOAP service generates an XML export file from backend data, validates that generated XML using Jakarta XML validation, then applies XPath filtering based on the search term and returns the filtered results in the SOAP response.
+
+### gRPC Weather Service (DHMZ integration)
+
+A gRPC server integrates with DHMZ weather data (from vrijeme.hr) and returns the current temperature for a given city name or substring. If more than one city matches, it returns all matches.
+
+### GraphQL API
+
+GraphQL is provided to query and manage the domain entity. Queries are available for “read” operations, while mutations are typically restricted to ADMIN users.
+
+### Client
+
+Includes a React client dashboard A simple tabbed UI provides a single place to test all parts:
+
+Login/registration
+XML/JSON import endpoints
+SOAP calls
+DHMZ weather search
+GraphQL queries/mutations
+Role-based access control (RBAC)
+
+USER role: read-only access (e.g., GET and GraphQL queries)
+ADMIN role: full CRUD access (POST/PUT/DELETE and GraphQL mutations)
+
+
 ## Okta
 
-Okta documentation: https://developer.okta.com/docs/api/openapi/asa/asa/users
+Okta is a cloud-based Identity and Access Management (IAM) platform. It is commonly used by organizations to centralize and secure authentication and authorization across applications.
+
+In practice, Okta provides:
+
+**User directory and lifecycle management**
+- Store users, groups, and profile attributes; manage provisioning, deactivation, and user status.
+
+**Authentication services**
+
+- Single Sign-On (SSO)
+- Multi-Factor Authentication (MFA)
+- Password policies and account recovery
+- Authorization and access control
+
+**Group-based access**
+- Role and policy management
+- Integration with standards such as OAuth 2.0, OpenID Connect, and SAML
+- Integration ecosystem Okta integrates with many SaaS and enterprise apps, allowing one identity to be used across multiple systems.
+
+
+## Okta documentation
+- Okta Users API documentation: https://developer.okta.com/docs/api/openapi/asa/asa/users
 
 ### Okta domain
-- Main URL: https://integrator-2485227-admin.okta.com/admin/users
-- Users: https://integrator-2485227-admin.okta.com/admin/users
+- Main URL: https://<domin>.okta.com/admin/users
+- Users: https://<domain>.okta.com/admin/users
+
+## Running the projects
 
 Frontend client:
 ```bash
@@ -15,7 +85,9 @@ npm i
 npm run dev
 ```
 
-Maven:
+## Quick commands
+
+**Maven:**
 
 ```bash
 # clean
@@ -27,7 +99,7 @@ Maven:
 ./mvnw -q clean generate-sources
 ```
 
-Quick test endpoints:
+**Quick test endpoints:**
 OKTA:
 ```bash
 curl -i \
@@ -133,5 +205,3 @@ curl -i -X POST http://localhost:8081/graphql \
 
 TODO:
 - Better error handling
-- OKTA - in app auth kad je public API
-- Napravit malo bolje auth!

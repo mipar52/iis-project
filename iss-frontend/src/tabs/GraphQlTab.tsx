@@ -99,7 +99,7 @@ export default function GraphqlTab() {
   const [presetKey, setPresetKey] = useState<PresetKey>("users");
   const preset = useMemo(() => presets[presetKey], [presetKey]);
 
-  const [query, setQuery] = useState(preset.query);
+  const [query, setQuery] = useState(() => preset.query as string);
   const [variablesText, setVariablesText] = useState(
     JSON.stringify(preset.variables, null, 2),
   );

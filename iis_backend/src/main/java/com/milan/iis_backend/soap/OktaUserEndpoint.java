@@ -5,6 +5,7 @@ import com.milan.iis_backend.service.implementation.OktaUserService;
 import com.milan.iis_backend.service.interfaces.imports.XmlExportService;
 import com.milan.iis_backend.soap.gen.SearchOktaUsersRequest;
 import com.milan.iis_backend.soap.gen.SearchOktaUsersResponse;
+import com.milan.iis_backend.soap.gen.SoapUserType;
 import com.milan.iis_backend.validation.XmlValidator;
 import jakarta.xml.bind.JAXBElement;
 import lombok.RequiredArgsConstructor;
@@ -40,23 +41,29 @@ public class OktaUserEndpoint {
         xmlExportService.writeUsersXmlToDisk(allUsers, xmlPath);
 
         // tocka 3 - xml validacija
-        List<String> errors = xmlValidator.validate(xmlPath, "schema/okta-users-export.xsd");
+        List<String> errors = xmlValidator.validate(xmlPath, "static/wsdl/okta-users-export.xsd");
         if (!errors.isEmpty()) { throw new IllegalArgumentException("Generated XML is not valid: " + String.join(" | ", errors)); }
 
-        List<OktaUser> filtered = xmlExportService.filterUsersFromXmlByXPath(xmlPath, term);
+        List<OktaUser> filtered = xmlExportService.filterUsersFromXmlByXPath(xmlPath, term, request.isExact());
 
         SearchOktaUsersResponse response = new SearchOktaUsersResponse();
         SearchOktaUsersResponse.Users usersWrapper = new SearchOktaUsersResponse.Users();
 
         for (OktaUser u : filtered) {
-            SearchOktaUsersResponse.Users.User soapUser = new SearchOktaUsersResponse.Users.User();
-            if (u.getId() != null) soapUser.setId(u.getId());
-            soapUser.setFirstName(u.getProfile().getFirstName());
-            soapUser.setLastName(u.getProfile().getLastName());
-            soapUser.setEmail(u.getProfile().getEmail());
-            soapUser.setLogin(u.getProfile().getLogin());
-            soapUser.setMobilePhone(u.getProfile().getMobilePhone());
-           // soapUser.setSourceType(u.getProfile().getSourceType());
+            SoapUserType soapUser = new SoapUserType();
+
+            if (u.getId() != null) {
+                soapUser.setId(u.getId());
+            }
+
+            if (u.getProfile() != null) {
+                soapUser.setFirstName(u.getProfile().getFirstName());
+                soapUser.setLastName(u.getProfile().getLastName());
+                soapUser.setEmail(u.getProfile().getEmail());
+                soapUser.setLogin(u.getProfile().getLogin());
+                soapUser.setMobilePhone(u.getProfile().getMobilePhone());
+            }
+
             usersWrapper.getUser().add(soapUser);
         }
 

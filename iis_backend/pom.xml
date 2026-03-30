@@ -224,7 +224,7 @@
                         <phase>generate-sources</phase>
                         <configuration>
                             <sources>
-                                <source>${project.basedir}/src/main/resources/soap/oktauser-soap.xsd</source>
+                                <source>${project.basedir}/src/main/resources/static/wsdl/oktauser-soap.xsd</source>
                             </sources>
                             <packageName>com.milan.iis_backend.soap.gen</packageName>
                             <outputDirectory>${project.build.directory}/generated-sources/xjc</outputDirectory>

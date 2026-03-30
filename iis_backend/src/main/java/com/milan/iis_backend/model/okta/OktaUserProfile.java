@@ -18,5 +18,4 @@ public class OktaUserProfile {
 
     @Column(nullable = false)
     private String email;
-
 }

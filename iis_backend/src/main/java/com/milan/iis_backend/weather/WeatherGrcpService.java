@@ -27,6 +27,7 @@ public class WeatherGrcpService extends WeatherServiceGrpc.WeatherServiceImplBas
                 response.addMatches(CityTemperature.newBuilder()
                         .setCity(temp.city())
                         .setTemperature(temp.temperature())
+                        .setWeather(temp.weather())
                         .setUnit("°C")
                         .build());
             }

@@ -16,7 +16,6 @@
             <xs:element name="profile" type="tns:OktaUserProfileType"/>
             <xs:element name="credentials" type="tns:OktaUserCredentialsType" minOccurs="0"/>
 
-
             <xs:element name="_links" type="tns:OktaLinksType" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
@@ -45,7 +44,6 @@
 
     <xs:complexType name="OktaPasswordType">
         <xs:sequence>
-
             <xs:element name="value" type="xs:string" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
@@ -57,7 +55,6 @@
         </xs:sequence>
     </xs:complexType>
 
-    <!-- OktaLinks -->
     <xs:complexType name="OktaLinksType">
         <xs:sequence>
             <xs:element name="self" type="tns:OktaLinkSelfType" minOccurs="0"/>
@@ -69,5 +66,13 @@
             <xs:element name="href" type="xs:string" minOccurs="0"/>
         </xs:sequence>
     </xs:complexType>
+
+    <xs:element name="oktaUsers">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="oktaUser" type="tns:OktaUserType" minOccurs="0" maxOccurs="unbounded"/>
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
 
 </xs:schema>

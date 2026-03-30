@@ -9,7 +9,7 @@ import java.util.List;
 public interface UserGateway {
     List<OktaUserDto> list();
     OktaUserDto get(String id);
-    OktaUserDto create(CreateOktaUserDto createOktaUserDto);
+    OktaUserDto create(CreateOktaUserDto createUserInput);
     OktaUserDto update(String id, UpdateOktaUserDto updateOktaUserDto);
     void delete(String id);
 }

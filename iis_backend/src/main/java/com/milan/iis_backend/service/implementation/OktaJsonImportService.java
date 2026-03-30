@@ -1,7 +1,7 @@
 package com.milan.iis_backend.service.implementation;
 
 import com.milan.iis_backend.exceptions.JsonSchemaValidationException;
-import com.milan.iis_backend.model.okta.OktaUserJson;
+import com.milan.iis_backend.model.okta.dto.OktaUserDto;
 import com.milan.iis_backend.service.interfaces.exports.JsonImportService;
 import com.networknt.schema.JsonSchema;
 import com.networknt.schema.JsonSchemaFactory;
@@ -28,7 +28,7 @@ public class OktaJsonImportService implements JsonImportService {
     }
 
     @Override
-    public OktaUserJson validateAndParse(byte[] jsonBytes) throws Exception {
+    public OktaUserDto validateAndParse(byte[] jsonBytes) throws Exception {
         com.fasterxml.jackson.databind.JsonNode jsonNode = objectMapper.readTree(jsonBytes);
         Set<ValidationMessage> errors = jsonSchema.validate(jsonNode);
 
@@ -36,6 +36,6 @@ public class OktaJsonImportService implements JsonImportService {
             String errorMessage = errors.stream().map(ValidationMessage::getMessage).collect(Collectors.joining("; "));
             throw new JsonSchemaValidationException(errors, errorMessage);
         }
-        return objectMapper.treeToValue(jsonNode, OktaUserJson.class);
+        return objectMapper.treeToValue(jsonNode, OktaUserDto.class);
     }
 }

@@ -28,10 +28,15 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
             try {
                 String username = jwtService.validateAndGetSubject(token);
+                String role = jwtService.validateAndGetRole(token);
+
+                if (role == null || role.isBlank()) role = "USER";
+
                 var authentication = new UsernamePasswordAuthenticationToken(
                         username,
                         null,
-                        List.of(new SimpleGrantedAuthority("ROLE_USER")));
+                        List.of(new SimpleGrantedAuthority("ROLE_" + role)));
+
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                 SecurityContextHolder.getContext().setAuthentication(authentication);
             } catch (Exception e) {

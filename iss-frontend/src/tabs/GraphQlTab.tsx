@@ -20,7 +20,6 @@ const presets = {
     title: "Query: users",
     query: `query {
   users {
-    id
     status
     created
     lastUpdated
@@ -46,17 +45,11 @@ const presets = {
     title: "Mutation: createUser",
     query: `mutation($input: CreateUserInput!) {
   createUser(input: $input) {
-    id
-    status
-    created
     profile { firstName lastName login email mobilePhone }
-    type { id }
   }
 }`,
     variables: {
       input: {
-        status: "ACTIVE",
-        type: { id: "employee" },
         profile: {
           firstName: "Branko",
           lastName: "Kockica",
@@ -79,10 +72,15 @@ const presets = {
   }
 }`,
     variables: {
-      id: "00u...",
+      id: "00u11ga7ck8ZgfWuu698",
       input: {
-        status: "SUSPENDED",
-        profile: { mobilePhone: "+385911111111" },
+        profile: {
+          firstName: "Brankyy",
+          lastName: "Kockii",
+          mobilePhone: "+385911111111",
+          login: "bkockica@gmail.com",
+          email: "bkockica@gmail.com",
+        },
       },
     },
   },
@@ -101,7 +99,7 @@ export default function GraphqlTab() {
   const [presetKey, setPresetKey] = useState<PresetKey>("users");
   const preset = useMemo(() => presets[presetKey], [presetKey]);
 
-  const [query, setQuery] = useState(preset.query);
+  const [query, setQuery] = useState(() => preset.query as string);
   const [variablesText, setVariablesText] = useState(
     JSON.stringify(preset.variables, null, 2),
   );
@@ -139,6 +137,40 @@ export default function GraphqlTab() {
       <Typography variant="h5" gutterBottom>
         Tab 5 — GraphQL
       </Typography>
+
+      <Card sx={{ mb: 2 }}>
+        <CardContent>
+          <Typography variant="subtitle2" sx={{ mb: 1 }}>
+            CRUD buttons
+          </Typography>
+
+          <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
+            <Button variant="outlined" onClick={() => loadPreset("users")}>
+              GET (users)
+            </Button>
+
+            <Button variant="outlined" onClick={() => loadPreset("createUser")}>
+              POST (createUser)
+            </Button>
+
+            <Button variant="outlined" onClick={() => loadPreset("updateUser")}>
+              PUT (updateUser)
+            </Button>
+
+            <Button
+              variant="outlined"
+              color="error"
+              onClick={() => loadPreset("deleteUser")}
+            >
+              DELETE (deleteUser)
+            </Button>
+
+            <Button variant="text" onClick={() => loadPreset("userById")}>
+              GET by id (user)
+            </Button>
+          </Box>
+        </CardContent>
+      </Card>
 
       {err && (
         <Alert severity="error" sx={{ mb: 2 }}>

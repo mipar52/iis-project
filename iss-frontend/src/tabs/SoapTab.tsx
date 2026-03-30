@@ -5,6 +5,8 @@ import {
   Button,
   Card,
   CardContent,
+  FormControlLabel,
+  Switch,
   Table,
   TableBody,
   TableCell,
@@ -24,7 +26,7 @@ type SoapUser = {
   mobilePhone?: string;
 };
 
-function buildSoapEnvelope(term: string) {
+function buildSoapEnvelope(term: string, exact: boolean) {
   // NAMESPACE_URI = http://milan.com/iis/oktauser/soap
   // localPart = searchOktaUsersRequest
   return `<?xml version="1.0" encoding="UTF-8"?>
@@ -34,6 +36,7 @@ function buildSoapEnvelope(term: string) {
   <soapenv:Body>
     <ok:searchOktaUsersRequest>
       <ok:term>${escapeXml(term)}</ok:term>
+      <ok:exact>${exact ? "true" : "false"}</ok:exact>
     </ok:searchOktaUsersRequest>
   </soapenv:Body>
 </soapenv:Envelope>`;
@@ -46,6 +49,41 @@ function escapeXml(s: string) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&apos;");
+}
+
+function formatXml(xmlText: string) {
+  const doc = new DOMParser().parseFromString(xmlText, "application/xml");
+
+  // ako parser napravi <parsererror>, vrati original da vidiš problem
+  if (doc.getElementsByTagName("parsererror").length) return xmlText;
+
+  const serializer = new XMLSerializer();
+  const raw = serializer.serializeToString(doc);
+
+  // XSLT indent (radi u browserima koji podržavaju XSLTProcessor)
+  try {
+    const xsltDoc = new DOMParser().parseFromString(
+      `<?xml version="1.0" encoding="UTF-8"?>
+       <xsl:stylesheet xmlns:xsl="http://www.w3.org/1999/XSL/Transform" version="1.0">
+         <xsl:output method="xml" indent="yes"/>
+         <xsl:strip-space elements="*"/>
+         <xsl:template match="@*|node()">
+           <xsl:copy>
+             <xsl:apply-templates select="@*|node()"/>
+           </xsl:copy>
+         </xsl:template>
+       </xsl:stylesheet>`,
+      "application/xml",
+    );
+
+    const proc = new XSLTProcessor();
+    proc.importStylesheet(xsltDoc);
+    const outDoc = proc.transformToDocument(doc);
+    return new XMLSerializer().serializeToString(outDoc);
+  } catch {
+    // fallback: bar ubaci nove linije između tagova
+    return raw.replace(/></g, ">\n<");
+  }
 }
 
 function parseSoapUsers(xmlText: string): SoapUser[] {
@@ -71,6 +109,7 @@ function parseSoapUsers(xmlText: string): SoapUser[] {
 
 export default function SoapTab() {
   const [term, setTerm] = useState("");
+  const [exact, setExact] = useState(false);
   const [raw, setRaw] = useState<string | null>(null);
   const [users, setUsers] = useState<SoapUser[]>([]);
   const [err, setErr] = useState<string | null>(null);
@@ -80,20 +119,26 @@ export default function SoapTab() {
     setRaw(null);
     setUsers([]);
 
-    const body = buildSoapEnvelope(term);
+    const body = buildSoapEnvelope(term, exact);
+
     const res = await httpText("/ws", {
       method: "POST",
       headers: {
         "Content-Type": "text/xml; charset=utf-8",
-        SOAPAction: "",
+        // SOAPAction: ""  // makni
       },
       body,
     });
 
-    setRaw(res.text);
+    setRaw(formatXml(res.text));
 
-    if (res.text.includes("Fault")) {
-      throw new Error("SOAP Fault detected. Pogledaj RAW response.");
+    const doc = new DOMParser().parseFromString(res.text, "text/xml");
+    const fault = doc.getElementsByTagName("Fault")[0];
+    if (fault) {
+      const faultString =
+        fault.getElementsByTagName("faultstring")[0]?.textContent ??
+        "SOAP Fault";
+      throw new Error(faultString);
     }
 
     setUsers(parseSoapUsers(res.text));
@@ -121,6 +166,16 @@ export default function SoapTab() {
             fullWidth
             value={term}
             onChange={(e) => setTerm(e.target.value)}
+          />
+          <FormControlLabel
+            sx={{ mt: 1 }}
+            control={
+              <Switch
+                checked={exact}
+                onChange={(e) => setExact(e.target.checked)}
+              />
+            }
+            label="Exact match"
           />
           <Button
             sx={{ mt: 2 }}

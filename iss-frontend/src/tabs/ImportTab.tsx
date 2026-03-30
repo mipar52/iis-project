@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
 import {
   Alert,
   Box,
@@ -6,113 +6,197 @@ import {
   Card,
   CardContent,
   Grid,
+  Stack,
   Typography,
 } from "@mui/material";
 import { getAccessToken } from "../api/http";
+
+type ApiResult = { kind: "import"; data: any } | { kind: "users"; data: any };
+
+async function fetchJson(url: string, init: RequestInit = {}) {
+  const res = await fetch(url, init);
+  const text = await res.text();
+
+  let data: any = null;
+  try {
+    data = text ? JSON.parse(text) : null;
+  } catch {
+    data = text;
+  }
+
+  if (!res.ok) {
+    const msg =
+      typeof data === "string"
+        ? data
+        : data
+          ? JSON.stringify(data)
+          : `HTTP ${res.status}`;
+    throw new Error(msg);
+  }
+
+  return data;
+}
 
 export default function ImportTab() {
   const [xmlFile, setXmlFile] = useState<File | null>(null);
   const [jsonFile, setJsonFile] = useState<File | null>(null);
 
-  const [out, setOut] = useState<any>(null);
+  const [result, setResult] = useState<ApiResult | null>(null);
   const [err, setErr] = useState<string | null>(null);
+  const [loading, setLoading] = useState<"import" | "users" | null>(null);
 
-  async function submit() {
-    setErr(null);
-    setOut(null);
-
-    const fd = new FormData();
-    if (xmlFile) fd.append("xmlFile", xmlFile);
-    if (jsonFile) fd.append("jsonFile", jsonFile);
-
-    const headers: Record<string, string> = {};
+  const headers = useMemo(() => {
+    const h: Record<string, string> = {};
     const token = getAccessToken();
-    if (token) headers["Authorization"] = `Bearer ${token}`;
+    if (token) h["Authorization"] = `Bearer ${token}`;
+    return h;
+  }, []);
 
-    const res = await fetch("/api/import/okta-user", {
-      method: "POST",
-      body: fd,
-      headers,
-    });
+  const canImport = Boolean(xmlFile || jsonFile);
 
-    const text = await res.text();
-    let data: any = null;
+  async function submitImport() {
+    setErr(null);
+    setResult(null);
+    setLoading("import");
+
     try {
-      data = JSON.parse(text);
-    } catch {
-      data = text;
-    }
+      const fd = new FormData();
+      if (xmlFile) fd.append("xmlFile", xmlFile);
+      if (jsonFile) fd.append("jsonFile", jsonFile);
 
-    if (!res.ok)
-      throw new Error(typeof data === "string" ? data : JSON.stringify(data));
-    setOut(data);
+      const data = await fetchJson("/api/import/okta-user", {
+        method: "POST",
+        body: fd,
+        headers,
+      });
+
+      setResult({ kind: "import", data });
+    } finally {
+      setLoading(null);
+    }
+  }
+
+  async function loadUsers() {
+    setErr(null);
+    setResult(null);
+    setLoading("users");
+
+    try {
+      const data = await fetchJson("/api/import/users", {
+        method: "GET",
+        headers,
+      });
+
+      setResult({ kind: "users", data });
+    } finally {
+      setLoading(null);
+    }
   }
 
   return (
     <Box>
       <Typography variant="h5" gutterBottom>
-        Tab 2 — REST: slanje XML + JSON (multipart) + validacija
+        Import (XML/JSON) + pregled korisnika
       </Typography>
 
-      {err && (
-        <Alert severity="error" sx={{ mb: 2 }}>
-          {err}
-        </Alert>
-      )}
-      {out && (
-        <Alert severity="success" sx={{ mb: 2 }}>
-          Import OK
-        </Alert>
-      )}
+      <Stack spacing={2}>
+        {err && <Alert severity="error">{err}</Alert>}
 
-      <Card>
-        <CardContent>
-          <Typography variant="body2" sx={{ color: "text.secondary", mb: 2 }}>
-            Endpoint: POST /api/import/okta-user (parts: xmlFile, jsonFile)
-          </Typography>
+        {result?.kind === "import" && (
+          <Alert severity="success">Import OK</Alert>
+        )}
+        {result?.kind === "users" && (
+          <Alert severity="success">Učitani korisnici</Alert>
+        )}
 
-          <Grid container spacing={2}>
-            <Grid item xs={12} md={6}>
-              <input
-                type="file"
-                accept=".xml,application/xml,text/xml"
-                onChange={(e) => setXmlFile(e.target.files?.[0] ?? null)}
-              />
-              <Typography variant="body2">
-                XML: {xmlFile ? xmlFile.name : "(nije odabran)"}
-              </Typography>
+        <Card>
+          <CardContent>
+            <Typography variant="subtitle1" gutterBottom>
+              Import
+            </Typography>
+            <Typography variant="body2" sx={{ color: "text.secondary", mb: 2 }}>
+              POST /api/import/okta-user (multipart: xmlFile, jsonFile)
+            </Typography>
+
+            <Grid container spacing={2}>
+              <Grid item xs={12} md={6}>
+                <Stack spacing={1}>
+                  <input
+                    type="file"
+                    accept=".xml,application/xml,text/xml"
+                    onChange={(e) => setXmlFile(e.target.files?.[0] ?? null)}
+                  />
+                  <Typography variant="body2">
+                    XML: {xmlFile ? xmlFile.name : "(nije odabran)"}
+                  </Typography>
+                  {xmlFile && (
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      onClick={() => setXmlFile(null)}
+                    >
+                      Clear XML
+                    </Button>
+                  )}
+                </Stack>
+              </Grid>
+
+              <Grid item xs={12} md={6}>
+                <Stack spacing={1}>
+                  <input
+                    type="file"
+                    accept=".json,application/json"
+                    onChange={(e) => setJsonFile(e.target.files?.[0] ?? null)}
+                  />
+                  <Typography variant="body2">
+                    JSON: {jsonFile ? jsonFile.name : "(nije odabran)"}
+                  </Typography>
+                  {jsonFile && (
+                    <Button
+                      size="small"
+                      variant="outlined"
+                      onClick={() => setJsonFile(null)}
+                    >
+                      Clear JSON
+                    </Button>
+                  )}
+                </Stack>
+              </Grid>
             </Grid>
 
-            <Grid item xs={12} md={6}>
-              <input
-                type="file"
-                accept=".json,application/json"
-                onChange={(e) => setJsonFile(e.target.files?.[0] ?? null)}
-              />
-              <Typography variant="body2">
-                JSON: {jsonFile ? jsonFile.name : "(nije odabran)"}
+            <Stack direction="row" spacing={2} sx={{ mt: 2 }}>
+              <Button
+                variant="contained"
+                disabled={!canImport || loading !== null}
+                onClick={() => submitImport().catch((e) => setErr(e.message))}
+              >
+                {loading === "import" ? "Importing..." : "Submit import"}
+              </Button>
+
+              <Button
+                variant="outlined"
+                disabled={loading !== null}
+                onClick={() => loadUsers().catch((e) => setErr(e.message))}
+              >
+                {loading === "users" ? "Loading..." : "Get all users"}
+              </Button>
+            </Stack>
+          </CardContent>
+        </Card>
+
+        {result && (
+          <Card>
+            <CardContent>
+              <Typography variant="subtitle2" gutterBottom>
+                Response
               </Typography>
-            </Grid>
-          </Grid>
-
-          <Button
-            sx={{ mt: 2 }}
-            variant="contained"
-            onClick={() => submit().catch((e) => setErr(e.message))}
-          >
-            Submit import
-          </Button>
-
-          {out && (
-            <Box sx={{ mt: 2 }}>
-              <Typography variant="subtitle2">Response</Typography>
-              <pre style={{ overflowX: "auto" }}>
-                {JSON.stringify(out, null, 2)}
+              <pre style={{ overflowX: "auto", margin: 0 }}>
+                {JSON.stringify(result.data, null, 2)}
               </pre>
-            </Box>
-          )}
-        </CardContent>
-      </Card>
+            </CardContent>
+          </Card>
+        )}
+      </Stack>
     </Box>
   );
 }

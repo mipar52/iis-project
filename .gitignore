@@ -155,4 +155,7 @@ psd
 thumb
 sketch
 
+# tajne
+config/
+
 # End of https://www.toptal.com/developers/gitignore/api/react,java,intellij

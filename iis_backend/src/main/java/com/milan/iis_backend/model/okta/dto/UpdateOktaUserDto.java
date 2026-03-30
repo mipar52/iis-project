@@ -8,20 +8,9 @@ public class UpdateOktaUserDto {
     @Valid
     private Profile profile;
 
-    private String status; // optional (npr ACTIVE/SUSPENDED) ako želiš
+    private String status;
 
-    private Type type; // optional
-
-    @Data
-    public static class Profile {
-        private String firstName;
-        private String lastName;
-        private String login;
-        private String email;
-        private String mobilePhone;
-        private String secondEmail;
-        // getters/setters
-    }
+    private Type type;
 
     @Data
     public static class Type {

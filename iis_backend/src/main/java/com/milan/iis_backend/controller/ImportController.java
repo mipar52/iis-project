@@ -1,12 +1,12 @@
 package com.milan.iis_backend.controller;
 
 import com.milan.iis_backend.model.okta.OktaUser;
-import com.milan.iis_backend.model.okta.OktaUserJson;
-import com.milan.iis_backend.model.okta.OktaUserProfile;
-import com.milan.iis_backend.model.okta.OktaUserXml;
+import com.milan.iis_backend.model.okta.dto.OktaUserDto;
+import com.milan.iis_backend.model.okta.dto.xml.OktaUserXml;
 import com.milan.iis_backend.repository.UserRepository;
 import com.milan.iis_backend.service.interfaces.exports.JsonImportService;
 import com.milan.iis_backend.service.interfaces.exports.XmlImportService;
+import com.milan.iis_backend.utils.OktaUtils;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestPart;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,22 +41,16 @@ public class ImportController {
         List<String> savedIds = new ArrayList<>();
         List<ValidationError> validationErrors = new ArrayList<>();
 
+        List<OktaUser> users = new ArrayList<>();
+
         if (xmlFile != null && !xmlFile.isEmpty()) {
             try {
                 byte[] xmlBytes = xmlFile.getBytes();
                 OktaUserXml dto = xmlImportService.validateAndParse(xmlBytes);
-
-                OktaUser user = new OktaUser();
-                OktaUserProfile profile = new OktaUserProfile();
-                profile.setFirstName(dto.firstName);
-                profile.setLastName(dto.lastName);
-                profile.setMobilePhone(dto.mobilePhone);
-                profile.setEmail(dto.email);
-                profile.setLogin(dto.login);
-                user.setProfile(profile);
-              //  profile.setSourceType("xml");
-
+                OktaUser user = OktaUtils.toOktaUserFromXml(dto, OffsetDateTime.now(ZoneOffset.UTC));
                 savedIds.add(userRepository.save(user).getId());
+
+                users.add(user);
 
             } catch (Exception ex) {
                 validationErrors.add(new ValidationError("xmlFile", ex.getMessage()));
@@ -64,17 +60,12 @@ public class ImportController {
         if (jsonValue != null && !jsonValue.isEmpty()) {
             try {
                 byte[] jsonBytes = jsonValue.getBytes();
-                OktaUserJson dto = jsonImportService.validateAndParse(jsonBytes);
+                OktaUserDto dto = jsonImportService.validateAndParse(jsonBytes);
+                OktaUser user = OktaUtils.toOktaUser(dto, OffsetDateTime.now(ZoneOffset.UTC));
+                savedIds.add(userRepository.save(user).getId());
 
-                OktaUser user = new OktaUser();
-                OktaUserProfile profile = new OktaUserProfile();
+                users.add(user);
 
-                profile.setFirstName(dto.firstName);
-                profile.setLastName(dto.lastName);
-                profile.setMobilePhone(dto.mobilePhone);
-                profile.setEmail(dto.email);
-                profile.setLogin(dto.login);
-                user.setProfile(profile);
             } catch (Exception ex) {
                 validationErrors.add(new ValidationError("jsonFile", ex.getMessage()));
             }
@@ -82,13 +73,15 @@ public class ImportController {
         if (!validationErrors.isEmpty()) {
             return ResponseEntity.badRequest().body(new ImportResult(savedIds, validationErrors));
         }
-        return ResponseEntity.ok(new ImportResult(savedIds, List.of()));
+
+        return ResponseEntity.ok(users.stream().map(OktaUtils::toDto));
     }
 
     @GetMapping("/users")
-    public List<OktaUser> getUsers() {
-        return userRepository.findAll();
+    public ResponseEntity<List<OktaUserDto>> getUsers() {
+        return ResponseEntity.ok(userRepository.findAll().stream().map(OktaUtils::toDto).toList());
     }
+
     public record ValidationError(String field, String message) {}
     public record ImportResult(List<String> savedIds, List<ValidationError> errors) {}
 }

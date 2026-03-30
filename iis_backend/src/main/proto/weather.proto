@@ -11,13 +11,14 @@ service WeatherService {
 }
 
 message CityQuery {
-  string query = 1; // naziv grada ili dio naziva
+  string query = 1;
 }
 
 message CityTemperature {
   string city = 1;
-  string temperature = 2; // npr. "12.3" ili "12"
-  string unit = 3;        // npr. "°C" (ako želiš)
+  string temperature = 2;
+  string unit = 3;
+  string weather = 4;
 }
 
 message CityTemperatureResponse {

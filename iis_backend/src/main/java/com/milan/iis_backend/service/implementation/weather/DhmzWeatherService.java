@@ -1,6 +1,5 @@
 package com.milan.iis_backend.service.implementation.weather;
 
-import com.milan.iis_backend.grpc.CityTemperature;
 import com.milan.iis_backend.service.interfaces.grcp.CityTemp;
 import com.milan.iis_backend.service.interfaces.grcp.WeatherService;
 import org.springframework.stereotype.Service;
@@ -42,8 +41,11 @@ public class DhmzWeatherService implements WeatherService {
                 String temp = pod == null ? null : textOf(pod, "Temp");
                 if (temp != null) temp = temp.trim();
                 if (temp == null || temp.isBlank()) continue;
+                String weather = textOf(pod, "Vrijeme");
+                if (weather != null) weather = weather.trim();
+                if (weather == null || weather.isBlank()) continue;
 
-                out.add(new CityTemp(city.trim(), temp));
+                out.add(new CityTemp(city.trim(), temp, weather));
             }
         }
         return out;

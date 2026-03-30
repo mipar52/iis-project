@@ -4,7 +4,6 @@ import com.milan.iis_backend.model.okta.dto.CreateOktaUserDto;
 import com.milan.iis_backend.model.okta.dto.OktaUserDto;
 import com.milan.iis_backend.model.okta.dto.UpdateOktaUserDto;
 import lombok.AllArgsConstructor;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperties;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -50,7 +49,7 @@ public class OktaUserPublicGateway implements  UserGateway {
     @Override
     public OktaUserDto update(String id, UpdateOktaUserDto updateOktaUserDto) {
         return oktaClient.put()
-                .uri("/api/v1/users/{id}", id)
+                .uri("/api/v1/users/{id}?sendEmail=false", id)
                 .contentType(MediaType.APPLICATION_JSON)
                 .body(updateOktaUserDto)
                 .retrieve()
@@ -60,7 +59,7 @@ public class OktaUserPublicGateway implements  UserGateway {
     @Override
     public void delete(String id) {
         oktaClient.delete()
-                .uri("/api/v1/users/{id}", id)
+                .uri("/api/v1/users/{id}?sendEmail=false", id)
                 .retrieve()
                 .toBodilessEntity();
     }

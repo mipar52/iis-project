@@ -94,6 +94,7 @@ public class AuthService {
         if (refreshToken.isRevoked()) throw new RuntimeException("Refresh token revoked!");
 
         refreshToken.setRevoked(true);
+        refreshToken.setExpiresAt(Instant.now());
         refreshTokenRepository.save(refreshToken);
     }
 

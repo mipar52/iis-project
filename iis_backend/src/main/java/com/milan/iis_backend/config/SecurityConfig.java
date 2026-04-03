@@ -37,10 +37,12 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> auth
                         // everyone can login
-                        .requestMatchers("/api/auth/login").permitAll()
-
-                        // everyone can register :D
-                        .requestMatchers("/api/auth/register").permitAll()
+                        .requestMatchers("/api/auth/**").permitAll()
+//                        .requestMatchers("/api/auth/refresh").hasAnyRole("USER", "ADMIN")
+//                        .requestMatchers("/api/auth/revoke").hasAnyRole("USER", "ADMIN")
+//
+//                        // everyone can register :D
+//                        .requestMatchers("/api/auth/register").permitAll()
 
                         // db access
                         .requestMatchers("/h2-console/**").permitAll()

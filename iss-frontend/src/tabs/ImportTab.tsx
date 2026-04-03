@@ -7,6 +7,7 @@ import {
   CardContent,
   Grid,
   Stack,
+  TextField,
   Typography,
 } from "@mui/material";
 import { getAccessToken } from "../api/http";
@@ -42,6 +43,10 @@ export default function ImportTab() {
   const [xmlFile, setXmlFile] = useState<File | null>(null);
   const [jsonFile, setJsonFile] = useState<File | null>(null);
 
+  const [jsonText, setJsonText] = useState<string>("");
+  const [xmlText, setXmlText] = useState<string>("");
+  const [jsonParseError, setJsonParseError] = useState<string | null>(null);
+
   const [result, setResult] = useState<ApiResult | null>(null);
   const [err, setErr] = useState<string | null>(null);
   const [loading, setLoading] = useState<"import" | "users" | null>(null);
@@ -53,7 +58,7 @@ export default function ImportTab() {
     return h;
   }, []);
 
-  const canImport = Boolean(xmlFile || jsonFile);
+  const canImport = Boolean(xmlFile || jsonText);
 
   async function submitImport() {
     setErr(null);
@@ -62,8 +67,18 @@ export default function ImportTab() {
 
     try {
       const fd = new FormData();
-      if (xmlFile) fd.append("xmlFile", xmlFile);
-      if (jsonFile) fd.append("jsonFile", jsonFile);
+
+      if (xmlText.trim()) {
+        const xmlBlob = new Blob([xmlText], { type: "application/xml" });
+        fd.append("xmlFile", xmlBlob, "live.xml");
+      }
+
+      if (jsonText.trim()) {
+        JSON.parse(jsonText);
+
+        const jsonBlob = new Blob([jsonText], { type: "application/json" });
+        fd.append("jsonFile", jsonBlob, "live.json");
+      }
 
       const data = await fetchJson("/api/import/okta-user", {
         method: "POST",
@@ -118,7 +133,7 @@ boda)`}
           <Alert severity="success">Import OK</Alert>
         )}
         {result?.kind === "users" && (
-          <Alert severity="success">Učitani korisnici</Alert>
+          <Alert severity="success">Dobro je, svi su se ucitali</Alert>
         )}
 
         <Card>
@@ -136,7 +151,12 @@ boda)`}
                   <input
                     type="file"
                     accept=".xml,application/xml,text/xml"
-                    onChange={(e) => setXmlFile(e.target.files?.[0] ?? null)}
+                    onChange={async (e) => {
+                      const xmlf = e.target.files?.[0] ?? null;
+                      setXmlFile(xmlf);
+                      setXmlText("");
+                      if (xmlf) setXmlText(await xmlf.text());
+                    }}
                   />
                   <Typography variant="body2">
                     XML: {xmlFile ? xmlFile.name : "(nije odabran)"}
@@ -145,7 +165,10 @@ boda)`}
                     <Button
                       size="small"
                       variant="outlined"
-                      onClick={() => setXmlFile(null)}
+                      onClick={() => {
+                        setXmlFile(null);
+                        setXmlText("");
+                      }}
                     >
                       Clear XML
                     </Button>
@@ -158,7 +181,23 @@ boda)`}
                   <input
                     type="file"
                     accept=".json,application/json"
-                    onChange={(e) => setJsonFile(e.target.files?.[0] ?? null)}
+                    onChange={async (e) => {
+                      const f = e.target.files?.[0] ?? null;
+                      setJsonFile(f);
+                      setJsonText("");
+                      setJsonParseError(null);
+
+                      if (f) {
+                        const t = await f.text();
+                        setJsonText(t);
+
+                        try {
+                          JSON.parse(t);
+                        } catch (err: any) {
+                          setJsonParseError(err?.message ?? "Invalid JSON");
+                        }
+                      }
+                    }}
                   />
                   <Typography variant="body2">
                     JSON: {jsonFile ? jsonFile.name : "(nije odabran)"}
@@ -167,7 +206,10 @@ boda)`}
                     <Button
                       size="small"
                       variant="outlined"
-                      onClick={() => setJsonFile(null)}
+                      onClick={() => {
+                        setJsonFile(null);
+                        setJsonText("");
+                      }}
                     >
                       Clear JSON
                     </Button>
@@ -195,11 +237,45 @@ boda)`}
             </Stack>
           </CardContent>
         </Card>
+        <Grid container spacing={2} sx={{ mt: 1 }}>
+          <Grid item xs={12} md={6}>
+            <Typography variant="subtitle2" gutterBottom>
+              XML editor
+            </Typography>
+            <TextField
+              value={xmlText}
+              onChange={(e) => setXmlText(e.target.value)}
+              fullWidth
+              multiline
+              minRows={14}
+              placeholder="<oktaUser>...</oktaUser>"
+              inputProps={{
+                style: { fontFamily: "ui-monospace, Consolas, monospace" },
+              }}
+            />
+          </Grid>
 
+          <Grid item xs={12} md={6}>
+            <Typography variant="subtitle2" gutterBottom>
+              JSON editor
+            </Typography>
+            <TextField
+              value={jsonText}
+              onChange={(e) => setJsonText(e.target.value)}
+              fullWidth
+              multiline
+              minRows={14}
+              placeholder='{ "type": "employee", ... }'
+              inputProps={{
+                style: { fontFamily: "ui-monospace, Consolas, monospace" },
+              }}
+            />
+          </Grid>
+        </Grid>
         {result && (
           <Card>
             <CardContent>
-              <Typography variant="subtitle2" gutterBottom>
+              <Typography variant="body1" gutterBottom>
                 Response
               </Typography>
               <pre style={{ overflowX: "auto", margin: 0 }}>

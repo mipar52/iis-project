@@ -24,8 +24,8 @@
     <!-- OktaUserProfile -->
     <xs:complexType name="OktaUserProfileType">
         <xs:sequence>
-            <xs:element name="firstName" type="xs:string" minOccurs="0"/>
-            <xs:element name="lastName" type="xs:string" minOccurs="0"/>
+            <xs:element name="firstName" type="xs:string" minOccurs="1"/>
+            <xs:element name="lastName" type="xs:string" minOccurs="1"/>
 
             <xs:element name="mobilePhone" type="xs:string" minOccurs="0"/>
             <xs:element name="secondEmail" type="xs:string" minOccurs="0"/>

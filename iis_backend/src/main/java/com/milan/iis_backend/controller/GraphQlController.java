@@ -4,7 +4,6 @@ import com.milan.iis_backend.model.okta.dto.CreateOktaUserDto;
 import com.milan.iis_backend.model.okta.dto.OktaUserDto;
 import com.milan.iis_backend.model.okta.dto.UpdateOktaUserDto;
 import com.milan.iis_backend.okta.UserGateway;
-import com.milan.iis_backend.repository.UserRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.graphql.data.method.annotation.Argument;
 import org.springframework.graphql.data.method.annotation.MutationMapping;
@@ -17,8 +16,9 @@ import java.util.List;
 @Controller
 @AllArgsConstructor
 public class GraphQlController {
-    private final UserRepository userRepository;
+
     private final UserGateway userGateway;
+
     @PreAuthorize("hasAnyRole('USER', 'ADMIN')")
     @QueryMapping
     public List<OktaUserDto> users() {
@@ -49,6 +49,4 @@ public class GraphQlController {
         userGateway.delete(id);
         return true;
     }
-
-    public record TypeInput(String id) {}
 }

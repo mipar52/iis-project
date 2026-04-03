@@ -16,15 +16,13 @@ import {
   getAccessToken,
   getRefreshToken,
   setAccessToken,
-  setRefreshToken,
   httpJson,
-  REFRESH_TOKEN_KEY,
 } from "../api/http";
 import InfoButton from "../components/InfoButton";
 
 type AuthResponse = {
   accessToken: string;
-  refreshToken?: string;
+  //refreshToken?: string;
 };
 
 export default function AuthTab() {
@@ -33,7 +31,9 @@ export default function AuthTab() {
   const [regUsername, setRegUsername] = useState("");
   const [regPassword, setRegPassword] = useState("");
   const [regRole, setRegRole] = useState<"USER" | "ADMIN">("USER");
-
+  const [authResponse, setAuthResponse] = useState<AuthResponse>({
+    accessToken: "",
+  });
   const [manualToken, setManualToken] = useState("");
   const [status, setStatus] = useState<string | null>(null);
   const [err, setErr] = useState<string | null>(null);
@@ -54,9 +54,10 @@ export default function AuthTab() {
     });
 
     setAccessToken(res.accessToken);
-    if (res.refreshToken) setRefreshToken(res.refreshToken);
+    setAuthResponse(res);
+    // if (res.refreshToken) setRefreshToken(res.refreshToken);
 
-    setStatus("Login OK. Token spremljen u localStorage.");
+    setStatus("Login prosao, svaka cast..");
   }
 
   async function doRegister() {
@@ -68,53 +69,56 @@ export default function AuthTab() {
       password: regPassword,
       role: regRole,
     };
-    const res = await httpJson<any>("/api/auth/register", {
+    const res = await httpJson<AuthResponse>("/api/auth/register", {
       method: "POST",
       body: JSON.stringify(body),
       auth: false,
     });
 
-    setStatus("Register OK: " + JSON.stringify(res));
+    setStatus("Registracija prosla, mozes ti to: " + JSON.stringify(res));
   }
 
   async function doRefresh() {
     setErr(null);
     setStatus(null);
 
-    const token = localStorage.getItem(REFRESH_TOKEN_KEY);
-    if (!token) {
-      setErr("No refresh token saved.");
-      return;
-    }
-
-    const body = { refreshToken: token };
-
-    const response = await httpJson<any>("/api/auth/refresh", {
+    const res = await httpJson<AuthResponse>("/api/auth/refresh", {
       method: "POST",
-      body: JSON.stringify(body),
-      auth: true,
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+      credentials: "include",
     });
 
-    if (response.accessToken) setAccessToken(response.accessToken);
-    if (response.refreshToken) setRefreshToken(response.refreshToken);
+    if (res?.accessToken) setAccessToken(res.accessToken);
 
-    setStatus("Refreshed!");
+    setAuthResponse(res);
+
+    setStatus("Dosta osvjezavajuce!");
   }
 
   async function doRevoke() {
     setErr(null);
     setStatus(null);
-    const body = { refreshToken: localStorage.getItem(REFRESH_TOKEN_KEY) };
 
-    await httpJson<AuthResponse>("api/auth/revoke", {
+    const res = await fetch("/api/auth/revoke", {
       method: "POST",
-      body: JSON.stringify(body),
-      auth: true,
+      headers: { "Content-Type": "application/json" },
+      body: "{}",
+      credentials: "include",
     });
-    //if (response.refreshToken) setRefreshToken(response.refreshToken);
-    setStatus("Revoked!");
-    setAccessToken(null);
-    setRefreshToken(null);
+
+    const text = await res.text();
+    let data: any;
+    try {
+      data = text ? JSON.parse(text) : null;
+    } catch {
+      data = text;
+    }
+
+    if (!res.ok)
+      throw new Error(typeof data === "string" ? data : JSON.stringify(data));
+
+    setStatus("Unistio si ga!");
   }
 
   function saveManualToken() {
@@ -199,14 +203,18 @@ točke). (LO1 – 2 boda, LO3 – 4 boda, LO7 4 boda)"
               <Divider sx={{ my: 2 }} />
 
               <Typography variant="subtitle2">Trenutno spremljeno</Typography>
-              <Typography variant="body2" sx={{ wordBreak: "break-all" }}>
-                accessToken:{" "}
-                {stored.accessToken ? stored.accessToken : "(nema)"}
-              </Typography>
-              <Typography variant="body2" sx={{ wordBreak: "break-all" }}>
-                refreshToken:{" "}
-                {stored.refreshToken ? stored.refreshToken : "(nema)"}
-              </Typography>
+              <Card>
+                <CardContent>
+                  <Typography variant="subtitle2" gutterBottom>
+                    Response
+                  </Typography>
+                  <pre
+                    style={{ overflowX: "auto", margin: 0, color: "#ffffff" }}
+                  >
+                    {JSON.stringify(authResponse, null, 2)}
+                  </pre>
+                </CardContent>
+              </Card>
 
               <Button color="error" sx={{ mt: 2 }} onClick={logout}>
                 Clear tokens

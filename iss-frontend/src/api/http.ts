@@ -42,7 +42,7 @@ export async function httpJson<T>(
     if (token) headers.set("Authorization", `Bearer ${token}`);
   }
 
-  const res = await fetch(url, { ...opts, headers });
+  const res = await fetch(url, { ...opts, headers, credentials: "include" });
 
   const text = await res.text();
   let data: any = null;

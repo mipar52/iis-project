@@ -28,14 +28,16 @@ type SoapUser = {
 };
 
 function buildSoapEnvelope(term: string, exact: boolean) {
-  // NAMESPACE_URI = http://milan.com/iis/oktauser/soap
-  // localPart = searchOktaUsersRequest
+  const NAMESPACE_URI = "http://milan.com/iis/oktauser/soap";
+  const localPart = "searchOktaUsersRequest";
+  //
+  //
   return `<?xml version="1.0" encoding="UTF-8"?>
 <soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
-                  xmlns:ok="http://milan.com/iis/oktauser/soap">
+                  xmlns:ok=${NAMESPACE_URI}>
   <soapenv:Header/>
   <soapenv:Body>
-    <ok:searchOktaUsersRequest>
+    <ok:${localPart}>
       <ok:term>${escapeXml(term)}</ok:term>
       <ok:exact>${exact ? "true" : "false"}</ok:exact>
     </ok:searchOktaUsersRequest>

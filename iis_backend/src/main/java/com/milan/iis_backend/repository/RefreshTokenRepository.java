@@ -1,6 +1,6 @@
 package com.milan.iis_backend.repository;
 
-import com.milan.iis_backend.security.RefreshToken;
+import com.milan.iis_backend.module_auth.models.RefreshToken;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
